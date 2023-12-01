@@ -36,6 +36,7 @@ func (l *Lobby) JoinLobby(playerID string, conn *websocket.Conn) {
 			l.joinRoom(playerID, int(roomID), conn)
 			fmt.Printf("joining room %v", int(roomID))
 			fmt.Println(l)
+			// broadcast the updated model
 		}
 		if cmdType == "createRoom" {
 			err := l.createNewRoom(playerID, int(roomID), conn)
@@ -46,16 +47,19 @@ func (l *Lobby) JoinLobby(playerID string, conn *websocket.Conn) {
 				fmt.Printf("creating room %v \n", int(roomID))
 				fmt.Println(l)
 			}
+			// broadcast the updated model
 		}
 		if cmdType == "deleteRoom" {
 			l.deleteRoom(int(roomID))
 			fmt.Printf("deleting room %v \n", int(roomID))
 			fmt.Println(l)
+			// broadcast the updated model
 		}
 		if cmdType == "leaveRoom" {
 			l.leaveRoom(playerID, int(roomID))
 			fmt.Printf("leaving room %v \n", int(roomID))
 			fmt.Println(l)
+			// broadcast the updated model
 		}
 	}
 }

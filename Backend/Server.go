@@ -8,7 +8,7 @@ import (
 
 	"github.com/gorilla/websocket"
 
-	model "SongBattleRoyale/Backend/Model"
+	model "SongBattleRoyale/Model"
 )
 
 var upgrader = websocket.Upgrader{
