@@ -1,4 +1,4 @@
-import { EventEmitter } from "stream"
+import { EventEmitter } from "events"
 
 export default class Room extends EventEmitter {
     public id: number

@@ -1,4 +1,4 @@
-import { EventEmitter } from "stream";
+import { EventEmitter } from "events";
 import Room from "./Room";
 
 export default class Lobby extends EventEmitter {
