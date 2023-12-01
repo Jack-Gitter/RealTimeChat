@@ -12,20 +12,15 @@ type Lobby struct {
 	PlayersInLobby map[string]*websocket.Conn
 }
 
-type Command struct {
-	CmdType string
-	RoomID  int
-}
-
 func (l *Lobby) JoinLobby(playerID string, conn *websocket.Conn) {
 	// set up the listeners for the connection here
 	l.PlayersInLobby[playerID] = conn
 
 	for {
 
-		var cmd Command
+		var msg map[string]interface{}
 
-		err := conn.ReadJSON(&cmd)
+		err := conn.ReadJSON(&msg)
 
 		if err != nil {
 			// remove them from the lobby and all rooms they are in here
@@ -34,29 +29,32 @@ func (l *Lobby) JoinLobby(playerID string, conn *websocket.Conn) {
 			return
 		}
 
-		if cmd.CmdType == "joinRoom" {
-			l.joinRoom(playerID, cmd.RoomID, conn)
-			fmt.Printf("joining room %v", cmd.RoomID)
+		cmdType := msg["cmdType"]
+		roomID := msg["roomID"].(float64)
+
+		if cmdType == "joinRoom" {
+			l.joinRoom(playerID, int(roomID), conn)
+			fmt.Printf("joining room %v", int(roomID))
 			fmt.Println(l)
 		}
-		if cmd.CmdType == "createRoom" {
-			err := l.createNewRoom(playerID, cmd.RoomID, conn)
+		if cmdType == "createRoom" {
+			err := l.createNewRoom(playerID, int(roomID), conn)
 			if err != nil {
 				conn.WriteMessage(websocket.TextMessage, []byte("failure"))
 			} else {
 				conn.WriteMessage(websocket.TextMessage, []byte("success"))
-				fmt.Printf("creating room %v \n", cmd.RoomID)
+				fmt.Printf("creating room %v \n", int(roomID))
 				fmt.Println(l)
 			}
 		}
-		if cmd.CmdType == "deleteRoom" {
-			l.deleteRoom(cmd.RoomID)
-			fmt.Printf("deleting room %v \n", cmd.RoomID)
+		if cmdType == "deleteRoom" {
+			l.deleteRoom(int(roomID))
+			fmt.Printf("deleting room %v \n", int(roomID))
 			fmt.Println(l)
 		}
-		if cmd.CmdType == "leaveRoom" {
-			l.leaveRoom(playerID, cmd.RoomID)
-			fmt.Printf("leaving room %v \n", cmd.RoomID)
+		if cmdType == "leaveRoom" {
+			l.leaveRoom(playerID, int(roomID))
+			fmt.Printf("leaving room %v \n", int(roomID))
 			fmt.Println(l)
 		}
 	}
