@@ -35,25 +35,32 @@ func (l *Lobby) JoinLobby(playerID string, conn *websocket.Conn) {
 
 		if cmd.CmdType == "joinRoom" {
 			l.joinRoom(playerID, cmd.RoomID, conn)
-			fmt.Println("joining room")
+			fmt.Printf("joining room %v", cmd.RoomID)
 		}
 		if cmd.CmdType == "createRoom" {
 			l.createNewRoom(playerID, cmd.RoomID, conn)
-			fmt.Println("creating room")
+			fmt.Printf("creating room %v", cmd.RoomID)
 		}
 		if cmd.CmdType == "deleteRoom" {
-			fmt.Println("deleting room")
+			l.deleteRoom(cmd.RoomID)
+			fmt.Printf("deleting room %v", cmd.RoomID)
 		}
 		if cmd.CmdType == "leaveRoom" {
-			fmt.Println("leaving room")
+			l.leaveRoom(playerID, cmd.RoomID)
+			fmt.Printf("leaving room %v", cmd.RoomID)
 		}
 
 	}
 }
 
 func (l *Lobby) createNewRoom(playerID string, roomID int, conn *websocket.Conn) {
-	l.Rooms = append(l.Rooms, Room{SecondsLeftInRound: 10, Id: roomID})
+	l.Rooms = append(l.Rooms, Room{SecondsLeftInRound: 10, Id: roomID, PlayerConnections: make(map[string]*websocket.Conn)})
 	idx := len(l.Rooms) - 1
+	l.Rooms[idx].PlayerConnections[playerID] = conn
+}
+
+func (l *Lobby) joinRoom(playerID string, roomID int, conn *websocket.Conn) {
+	idx := l.findRoomIndex(roomID)
 	l.Rooms[idx].PlayerConnections[playerID] = conn
 }
 
@@ -62,20 +69,9 @@ func (l *Lobby) deleteRoom(roomID int) {
 	l.Rooms = append(l.Rooms[:idx], l.Rooms[idx+1:]...)
 }
 
-func (l *Lobby) joinRoom(playerID string, roomID int, conn *websocket.Conn) {
-	idx := l.findRoomIndex(roomID)
-	l.Rooms[idx].PlayerConnections[playerID] = conn
-}
-
-func (l *Lobby) addPlayerToRoom(roomID int, playerID string, conn *websocket.Conn) {
-	idx := l.findRoomIndex(roomID)
-	l.Rooms[idx].PlayerConnections[playerID] = conn
-}
-
-func (l *Lobby) removePlayerFromRoom(roomID int, playerID string) {
+func (l *Lobby) leaveRoom(playerID string, roomID int) {
 	idx := l.findRoomIndex(roomID)
 	delete(l.Rooms[idx].PlayerConnections, playerID)
-
 }
 
 func (l *Lobby) findRoomIndex(roomID int) int {
