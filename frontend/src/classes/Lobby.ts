@@ -23,12 +23,13 @@ export default class Lobby extends EventEmitter {
                 // do message stuff here
             } catch (err) {
                 this.ourPlayerID = event.data
+                this.playerConnections.set(this.ourPlayerID, socket)
                 this.emit("ourPlayerChanged", this.ourPlayerID)
             }
             
         }
         socket.onopen = () => socket.send(JSON.stringify({"cmdType": "getID"}))
-        this.playerConnections.set(this.ourPlayerID, socket)
+        
         
     }
 

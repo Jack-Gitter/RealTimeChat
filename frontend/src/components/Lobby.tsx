@@ -10,6 +10,7 @@ export default function Lobby(): JSX.Element {
     
     useEffect(() => {
         lobby.addListener("ourPlayerChanged", () => setOurPlayerID(lobby.ourPlayerID))
+        lobby.addListener("ourPlayerChanged", () => console.log(lobby))
     })
     
     if (lobby.ourPlayerID === '') {
