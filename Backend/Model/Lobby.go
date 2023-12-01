@@ -12,17 +12,20 @@ type Lobby struct {
 	PlayersInLobby map[string]*websocket.Conn
 }
 
+type Command struct {
+	CmdType string
+	RoomID  int
+}
+
 func (l *Lobby) JoinLobby(playerID string, conn *websocket.Conn) {
 	// set up the listeners for the connection here
 	l.PlayersInLobby[playerID] = conn
 
 	for {
 
-		var cmd map[string]interface{}
+		var cmd Command
 
 		err := conn.ReadJSON(&cmd)
-
-		cmdType := cmd["cmdType"]
 
 		if err != nil {
 			fmt.Println(err)
@@ -30,24 +33,26 @@ func (l *Lobby) JoinLobby(playerID string, conn *websocket.Conn) {
 			return
 		}
 
-		if cmdType == "joinRoom" {
+		if cmd.CmdType == "joinRoom" {
+			l.joinRoom(playerID, cmd.RoomID, conn)
 			fmt.Println("joining room")
 		}
-		if cmdType == "leaveRoom" {
-			fmt.Println("leaving room")
-		}
-		if cmdType == "createRoom" {
+		if cmd.CmdType == "createRoom" {
+			l.createNewRoom(playerID, cmd.RoomID, conn)
 			fmt.Println("creating room")
 		}
-		if cmdType == "deleteRoom" {
+		if cmd.CmdType == "deleteRoom" {
 			fmt.Println("deleting room")
+		}
+		if cmd.CmdType == "leaveRoom" {
+			fmt.Println("leaving room")
 		}
 
 	}
 }
 
-func (l *Lobby) createNewRoom(playerID string, conn *websocket.Conn) {
-	l.Rooms = append(l.Rooms, Room{SecondsLeftInRound: 10})
+func (l *Lobby) createNewRoom(playerID string, roomID int, conn *websocket.Conn) {
+	l.Rooms = append(l.Rooms, Room{SecondsLeftInRound: 10, Id: roomID})
 	idx := len(l.Rooms) - 1
 	l.Rooms[idx].PlayerConnections[playerID] = conn
 }
