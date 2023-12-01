@@ -12,10 +12,18 @@ export default function Lobby(): JSX.Element {
         lobby.addListener("ourPlayerChanged", () => setOurPlayerID(lobby.ourPlayerID))
     })
     
-    return (
-        <div>
-            {ourPlayerID}
-            <button onClick={() => {lobby.addUserToLobby()}}>Join Lobby</button>
-        </div>
-    )
+    if (lobby.ourPlayerID === '') {
+        return (
+            <div>
+                <button onClick={() => {lobby.addUserToLobby()}}>Join Lobby</button>
+            </div>
+        )
+    } else {
+        return (
+            <div>
+                {ourPlayerID}
+            </div>
+        )
+    }
+    
 }
