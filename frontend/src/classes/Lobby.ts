@@ -22,6 +22,7 @@ export default class Lobby extends EventEmitter {
         // check for the userID sent back from the server 
 
         // handle all different socket events possible???
+        
         socket.onmessage = (event) => {
             try {
                 let jsonMessage = JSON.parse(event.data)
@@ -32,9 +33,8 @@ export default class Lobby extends EventEmitter {
             }
             
         }
-        socket.send(JSON.stringify({"cmdType": "getID"}))
-
-        this.playerConnections.set(this.ourPlayerID, socket)
+        socket.onopen = () => socket.send(JSON.stringify({"cmdType": "getID"}))
+        //this.playerConnections.set(this.ourPlayerID, socket)
         
     }
 
