@@ -23,6 +23,11 @@ var lobby = model.Lobby{
 	PlayersInLobby: make(map[string]*websocket.Conn, 0),
 }
 
+func main() {
+	http.HandleFunc("/lobby", joinLobbyHandler)
+	http.ListenAndServe("localhost:8080", nil)
+}
+
 func joinLobbyHandler(w http.ResponseWriter, r *http.Request) {
 	conn, err := upgrader.Upgrade(w, r, nil)
 
@@ -34,11 +39,6 @@ func joinLobbyHandler(w http.ResponseWriter, r *http.Request) {
 	conn.WriteMessage(websocket.TextMessage, []byte(id))
 	lobby.JoinLobby(id, conn)
 
-}
-
-func main() {
-	http.HandleFunc("/lobby", joinLobbyHandler)
-	http.ListenAndServe("localhost:8080", nil)
 }
 
 const charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"

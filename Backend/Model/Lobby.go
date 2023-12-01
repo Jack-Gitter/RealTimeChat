@@ -28,6 +28,7 @@ func (l *Lobby) JoinLobby(playerID string, conn *websocket.Conn) {
 		err := conn.ReadJSON(&cmd)
 
 		if err != nil {
+			// remove them from the lobby and all rooms they are in here
 			fmt.Println(err)
 			conn.Close()
 			return
@@ -36,27 +37,36 @@ func (l *Lobby) JoinLobby(playerID string, conn *websocket.Conn) {
 		if cmd.CmdType == "joinRoom" {
 			l.joinRoom(playerID, cmd.RoomID, conn)
 			fmt.Printf("joining room %v", cmd.RoomID)
+			fmt.Println(l)
 		}
 		if cmd.CmdType == "createRoom" {
-			l.createNewRoom(playerID, cmd.RoomID, conn)
-			fmt.Printf("creating room %v", cmd.RoomID)
+			err := l.createNewRoom(playerID, cmd.RoomID, conn)
+			if err != nil {
+				conn.WriteMessage(websocket.TextMessage, []byte("failure"))
+			} else {
+				conn.WriteMessage(websocket.TextMessage, []byte("success"))
+				fmt.Printf("creating room %v \n", cmd.RoomID)
+				fmt.Println(l)
+			}
 		}
 		if cmd.CmdType == "deleteRoom" {
 			l.deleteRoom(cmd.RoomID)
-			fmt.Printf("deleting room %v", cmd.RoomID)
+			fmt.Printf("deleting room %v \n", cmd.RoomID)
+			fmt.Println(l)
 		}
 		if cmd.CmdType == "leaveRoom" {
 			l.leaveRoom(playerID, cmd.RoomID)
-			fmt.Printf("leaving room %v", cmd.RoomID)
+			fmt.Printf("leaving room %v \n", cmd.RoomID)
+			fmt.Println(l)
 		}
-
 	}
 }
 
-func (l *Lobby) createNewRoom(playerID string, roomID int, conn *websocket.Conn) {
+func (l *Lobby) createNewRoom(playerID string, roomID int, conn *websocket.Conn) error {
 	l.Rooms = append(l.Rooms, Room{SecondsLeftInRound: 10, Id: roomID, PlayerConnections: make(map[string]*websocket.Conn)})
 	idx := len(l.Rooms) - 1
 	l.Rooms[idx].PlayerConnections[playerID] = conn
+	return nil
 }
 
 func (l *Lobby) joinRoom(playerID string, roomID int, conn *websocket.Conn) {
