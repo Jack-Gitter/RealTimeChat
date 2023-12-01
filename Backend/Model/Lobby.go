@@ -35,31 +35,25 @@ func (l *Lobby) JoinLobby(playerID string, conn *websocket.Conn) {
 		if cmdType == "joinRoom" {
 			l.joinRoom(playerID, int(roomID), conn)
 			fmt.Printf("joining room %v", int(roomID))
-			fmt.Println(l)
+
 			// broadcast the updated model
 		}
 		if cmdType == "createRoom" {
-			err := l.createNewRoom(playerID, int(roomID), conn)
-			if err != nil {
-				conn.WriteMessage(websocket.TextMessage, []byte("failure"))
-			} else {
-				conn.WriteMessage(websocket.TextMessage, []byte("success"))
-				fmt.Printf("creating room %v \n", int(roomID))
-				fmt.Println(l)
-			}
-			// broadcast the updated model
+			l.createNewRoom(playerID, int(roomID), conn)
+			l.sendNewRoomMessageToAllUsers(int(roomID))
+			fmt.Printf("creating room %v \n", int(roomID))
+
 		}
 		if cmdType == "deleteRoom" {
 			l.deleteRoom(int(roomID))
 			fmt.Printf("deleting room %v \n", int(roomID))
-			fmt.Println(l)
+
 			// broadcast the updated model
 		}
 		if cmdType == "leaveRoom" {
 			l.leaveRoom(playerID, int(roomID))
 			fmt.Printf("leaving room %v \n", int(roomID))
-			fmt.Println(l)
-			// broadcast the updated model
+
 		}
 	}
 }
@@ -90,4 +84,13 @@ func (l *Lobby) findRoomIndex(roomID int) int {
 	return slices.IndexFunc(l.Rooms, func(r Room) bool {
 		return r.Id == roomID
 	})
+}
+
+func (l *Lobby) sendNewRoomMessageToAllUsers(roomID int) {
+	idx := l.findRoomIndex(roomID)
+	room := l.Rooms[idx]
+	cmd := NewRoomCommand{CmdType: "NewRoom", Room: room}
+	for _, c := range l.PlayersInLobby {
+		c.WriteJSON(cmd)
+	}
 }
