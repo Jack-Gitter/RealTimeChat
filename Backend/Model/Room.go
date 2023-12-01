@@ -5,10 +5,14 @@ import (
 )
 
 type Room struct {
-	id                 int
-	isInProgress       bool
-	currentSongToguess string
-	secondsLeftInRound int
-	roundsElapsed      int
-	playerConnections  map[string]*websocket.Conn
+	Id                 int
+	IsInProgress       bool
+	CurrentSongToguess string
+	SecondsLeftInRound int
+	RoundsElapsed      int
+	PlayerConnections  map[string]*websocket.Conn
+}
+
+func (r *Room) LoadNextSong() {
+	// use the spotify api to find a new random song
 }
