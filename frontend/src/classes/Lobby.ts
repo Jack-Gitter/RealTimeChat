@@ -3,32 +3,45 @@ import Room from "./Room";
 
 export default class Lobby extends EventEmitter {
     public rooms: Room[]
-    public playerConnections: Map<string, WebSocket>
+    public otherPlayers: string[]
     public ourPlayerID: string
+    public ourPlayerSocket: WebSocket | undefined
 
     constructor() {
         super()
         this.rooms = []
-        this.playerConnections = new Map()
+        this.otherPlayers = []
         this.ourPlayerID = ""
+        this.ourPlayerSocket = undefined
     }
 
     public async addUserToLobby() {
-        let socket = new WebSocket("ws://localhost:8080/lobby")
+
+        this.ourPlayerSocket = new WebSocket("ws://localhost:8080/lobby")
         
-        socket.onmessage = (event) => {
+        // here i need to get the lobby from the server -- just send a message to get the lobby state
+        this.ourPlayerSocket.onmessage = (event) => {
             try {
                 let jsonMessage = JSON.parse(event.data)
                 console.log(jsonMessage)
-                // do message stuff here
+                if (jsonMessage["CmdType"] === "connectionResponse") {
+                    this.ourPlayerID = jsonMessage["OurPlayerID"]
+                    for (const playerID in jsonMessage["Lobby"]["PlayersInLobby"]) {
+                       this.otherPlayers.push(playerID)
+                    }
+                    this.rooms = jsonMessage["Rooms"]
+                    this.emit("connectionResponse", this)
+                }
             } catch (err) {
-                this.ourPlayerID = event.data
-                this.playerConnections.set(this.ourPlayerID, socket)
-                this.emit("ourPlayerChanged", this.ourPlayerID)
+                if (err instanceof Error) {
+                    console.log(err)
+                }
             }
             
         }
-        socket.onopen = () => socket.send(JSON.stringify({"cmdType": "getID"}))
+
+        this.ourPlayerSocket.onopen = () => this.ourPlayerSocket?.send(JSON.stringify({"cmdType": "connect"}))
+        
         
         
     }

@@ -32,8 +32,8 @@ func (l *Lobby) JoinLobby(playerID string, conn *websocket.Conn) {
 		cmdType := msg["cmdType"]
 		roomID := msg["roomID"]
 
-		if cmdType == "getID" {
-			conn.WriteMessage(websocket.TextMessage, []byte(playerID))
+		if cmdType == "connect" {
+			conn.WriteJSON(ConnectCommand{CmdType: "connectionResponse", Lobby: *l, OurPlayerID: playerID})
 		}
 
 		if cmdType == "joinRoom" {
