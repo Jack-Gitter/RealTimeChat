@@ -32,6 +32,10 @@ func (l *Lobby) JoinLobby(playerID string, conn *websocket.Conn) {
 		cmdType := msg["cmdType"]
 		roomID := msg["roomID"].(float64)
 
+		if cmdType == "getID" {
+			conn.WriteMessage(websocket.TextMessage, []byte(playerID))
+		}
+
 		if cmdType == "joinRoom" {
 			l.joinRoom(playerID, int(roomID), conn)
 			fmt.Printf("joining room %v", int(roomID))

@@ -36,7 +36,6 @@ func joinLobbyHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	id := generateRandomString(10)
-	conn.WriteMessage(websocket.TextMessage, []byte(id))
 	lobby.JoinLobby(id, conn)
 
 }

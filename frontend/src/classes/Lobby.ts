@@ -20,7 +20,20 @@ export default class Lobby extends EventEmitter {
         // update frontend model
         let socket = new WebSocket("ws://localhost:8080/lobby")
         // check for the userID sent back from the server 
-        socket.onmessage = (event) => {this.ourPlayerID = event.data}
+
+        // handle all different socket events possible???
+        socket.onmessage = (event) => {
+            try {
+                let jsonMessage = JSON.parse(event.data)
+                console.log(jsonMessage)
+                // do message stuff here
+            } catch (err) {
+                this.ourPlayerID = event.data
+            }
+            
+        }
+        socket.send(JSON.stringify({"cmdType": "getID"}))
+
         this.playerConnections.set(this.ourPlayerID, socket)
         
     }
