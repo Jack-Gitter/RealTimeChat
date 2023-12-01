@@ -34,13 +34,17 @@ func (l *Lobby) JoinLobby(playerID string, conn *websocket.Conn) {
 
 		if cmdType == "connect" {
 			conn.WriteJSON(ConnectCommand{CmdType: "connectionResponse", Lobby: *l, OurPlayerID: playerID})
+			for pid, c := range l.PlayersInLobby {
+				if pid != playerID {
+					c.WriteJSON(LobbyUpdate{CmdType: "LobbyUpdate", Lobby: *l})
+				}
+
+			}
 		}
 
 		if cmdType == "joinRoom" {
 			l.joinRoom(playerID, int(roomID.(float64)), conn)
 			fmt.Printf("joining room %v", int(roomID.(float64)))
-
-			// broadcast the updated model
 		}
 		if cmdType == "createRoom" {
 			l.createNewRoom(playerID, int(roomID.(float64)), conn)

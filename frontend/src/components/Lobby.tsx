@@ -7,13 +7,18 @@ export default function Lobby(): JSX.Element {
     let lobby = LobbyComponent.lobby
     let setLobby = LobbyComponent.setLobby
     let [ourPlayerID, setOurPlayerID] = useState(lobby.ourPlayerID)
+    let [otherPlayers, setOtherPlayers] = useState(lobby.otherPlayers)
     
     useEffect(() => {
-        lobby.addListener("ourPlayerChanged", () => setOurPlayerID(lobby.ourPlayerID))
-        lobby.addListener("ourPlayerChanged", () => console.log(lobby))
+        lobby.addListener("LobbyUpdate", (l) => {
+            setLobby(l)
+            setOurPlayerID(l.ourPlayerID)
+            setOtherPlayers([...l.otherPlayers])
+        })
         lobby.addListener("connectionResponse", (l) => {
             setLobby(l)
             setOurPlayerID(l.ourPlayerID)
+            setOtherPlayers([...l.otherPlayers])
         })
     })
     
@@ -32,6 +37,9 @@ export default function Lobby(): JSX.Element {
         return (
             <div>
                 {ourPlayerID}
+                <ul>
+                {otherPlayers.map(pID => <li>{pID}</li>)}
+                </ul>
             </div>
         )
     }

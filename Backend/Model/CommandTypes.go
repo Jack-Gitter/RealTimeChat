@@ -10,3 +10,8 @@ type ConnectCommand struct {
 	Lobby       Lobby
 	OurPlayerID string
 }
+
+type LobbyUpdate struct {
+	CmdType string
+	Lobby   Lobby
+}

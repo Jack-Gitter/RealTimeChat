@@ -23,7 +23,6 @@ export default class Lobby extends EventEmitter {
         this.ourPlayerSocket.onmessage = (event) => {
             try {
                 let jsonMessage = JSON.parse(event.data)
-                console.log(jsonMessage)
                 if (jsonMessage["CmdType"] === "connectionResponse") {
                     this.ourPlayerID = jsonMessage["OurPlayerID"]
                     for (const playerID in jsonMessage["Lobby"]["PlayersInLobby"]) {
@@ -31,6 +30,16 @@ export default class Lobby extends EventEmitter {
                     }
                     this.rooms = jsonMessage["Rooms"]
                     this.emit("connectionResponse", this)
+                } 
+                if (jsonMessage["CmdType"] === "LobbyUpdate") {
+                    console.log("got this command")
+                    for (const playerID in jsonMessage["Lobby"]["PlayersInLobby"]) {
+                        if (playerID !== this.ourPlayerID && this.otherPlayers.find((pID) => pID === playerID) === undefined) {
+                            this.otherPlayers.push(playerID)
+                        }
+                        
+                    }
+                    this.emit("LobbyUpdate", this)
                 }
             } catch (err) {
                 if (err instanceof Error) {
