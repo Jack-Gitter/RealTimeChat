@@ -15,7 +15,12 @@ export default function Lobby(): JSX.Element {
     if (lobby.ourPlayerID === '') {
         return (
             <div>
-                <button onClick={() => {lobby.addUserToLobby()}}>Join Lobby</button>
+                <button onClick={() => {
+                    lobby.addUserToLobby()
+                    setLobby(lobby)
+                    }}>
+                    Join Lobby
+                </button>
             </div>
         )
     } else {
