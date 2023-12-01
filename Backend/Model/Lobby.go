@@ -19,20 +19,24 @@ func (l *Lobby) JoinLobby(playerID string, conn *websocket.Conn) {
 	for {
 
 		var cmd map[string]interface{}
+
 		err := conn.ReadJSON(&cmd)
+
+		cmdType := cmd["cmdType"]
+
 		if err != nil {
 			fmt.Println(err)
 			conn.Close()
 			return
 		}
 
-		if cmd["cmdType"] == "joinRoom" {
+		if cmdType == "joinRoom" {
 			fmt.Println("joining room")
 		}
-		if cmd["cmdType"] == "leaveRoom" {
+		if cmdType == "leaveRoom" {
 			fmt.Println("leaving room")
 		}
-		if cmd["cmdType"] == "createRoom" {
+		if cmdType == "createRoom" {
 			fmt.Println("creating room")
 		}
 
