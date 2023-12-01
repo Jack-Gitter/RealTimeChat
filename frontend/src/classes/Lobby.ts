@@ -34,7 +34,7 @@ export default class Lobby extends EventEmitter {
             
         }
         socket.onopen = () => socket.send(JSON.stringify({"cmdType": "getID"}))
-        //this.playerConnections.set(this.ourPlayerID, socket)
+        this.playerConnections.set(this.ourPlayerID, socket)
         
     }
 
