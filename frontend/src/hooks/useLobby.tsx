@@ -1,9 +1,10 @@
 import { useContext } from "react";
-import Lobby from "../classes/Lobby";
-import LobbyContext from "../contexts/LobbyContext";
+import LobbyContext, { LobbyContextType } from "../contexts/LobbyContext";
+import assert from "assert";
 
-export default function useLobby(): Lobby {
+export default function useLobby(): LobbyContextType | null { 
     const ctx = useContext(LobbyContext);
+    assert(ctx, 'Lobby should be defined');
     return ctx;
   }
   
