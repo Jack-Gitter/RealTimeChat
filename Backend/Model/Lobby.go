@@ -54,9 +54,6 @@ func (l *Lobby) createNewRoom(playerID string, conn *websocket.Conn) {
 
 func (l *Lobby) deleteRoom(roomID int) {
 	idx := l.findRoomIndex(roomID)
-	for _, connection := range l.Rooms[idx].PlayerConnections {
-		connection.Close()
-	}
 	l.Rooms = append(l.Rooms[:idx], l.Rooms[idx+1:]...)
 }
 
