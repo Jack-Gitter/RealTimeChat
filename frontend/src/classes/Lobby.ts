@@ -39,6 +39,7 @@ export default class Lobby extends EventEmitter {
                         }
                         
                     }
+                    this.rooms = jsonMessage["Rooms"]
                     this.emit("LobbyUpdate", this)
                 }
             } catch (err) {

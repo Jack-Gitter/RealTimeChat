@@ -8,17 +8,20 @@ export default function Lobby(): JSX.Element {
     let setLobby = LobbyComponent.setLobby
     let [ourPlayerID, setOurPlayerID] = useState(lobby.ourPlayerID)
     let [otherPlayers, setOtherPlayers] = useState(lobby.otherPlayers)
+    let [rooms, setRooms] = useState(lobby.rooms)
     
     useEffect(() => {
         lobby.addListener("LobbyUpdate", (l) => {
             setLobby(l)
             setOurPlayerID(l.ourPlayerID)
             setOtherPlayers([...l.otherPlayers])
+            setRooms([...l.rooms])
         })
         lobby.addListener("connectionResponse", (l) => {
             setLobby(l)
             setOurPlayerID(l.ourPlayerID)
             setOtherPlayers([...l.otherPlayers])
+            setRooms([...l.rooms])
         })
     })
     
@@ -36,9 +39,15 @@ export default function Lobby(): JSX.Element {
     } else {
         return (
             <div>
-                {ourPlayerID}
+                <h1>Song Battle Royale Lobby</h1>
+                <h3>Your username is: {ourPlayerID}</h3>
+                <h3>Other players in the lobby currently are: </h3>
                 <ul>
                 {otherPlayers.map(pID => <li>{pID}</li>)}
+                </ul>
+                <h3>Available rooms are</h3>
+                <ul>
+                {rooms.map(r => r.id)}
                 </ul>
             </div>
         )
