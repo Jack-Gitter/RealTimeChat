@@ -49,7 +49,7 @@ func (l *Lobby) JoinLobby(playerID string, conn *websocket.Conn) {
 		}
 		if cmdType == "createRoom" {
 			l.createNewRoom(playerID, l.NextRoomID, conn)
-			l.sendNewRoomMessageToAllUsers(l.NextRoomID)
+			l.sendNewRoomMessageToAllUsersInLobby(l.NextRoomID)
 			fmt.Printf("creating room %v \n", l.NextRoomID)
 			l.NextRoomID += 1
 		}
@@ -102,7 +102,7 @@ func (l *Lobby) findRoomIndex(roomID int) int {
 	})
 }
 
-func (l *Lobby) sendNewRoomMessageToAllUsers(roomID int) {
+func (l *Lobby) sendNewRoomMessageToAllUsersInLobby(roomID int) {
 	idx := l.findRoomIndex(roomID)
 	room := l.Rooms[idx]
 	fmt.Printf("sending room %v", room)
