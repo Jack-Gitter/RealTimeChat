@@ -87,6 +87,12 @@ func (l *Lobby) deleteRoom(roomID int) {
 		l.PlayersInLobby[k] = v
 	}
 	l.Rooms = append(l.Rooms[:idx], l.Rooms[idx+1:]...)
+	l.sendDeleteRoomMessage(roomID)
+
+}
+
+func (l *Lobby) sendDeleteRoomMessage(roomID int) {
+	broadcastMessageToLobby[LobbyUpdate](LobbyUpdate{CmdType: "LobbyUpdate", Lobby: *l}, l.PlayersInLobby)
 }
 
 func (l *Lobby) leaveRoom(playerID string, roomID int) {

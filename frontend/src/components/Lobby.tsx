@@ -18,18 +18,7 @@ export default function Lobby(): JSX.Element {
       setOurPlayerID(l.ourPlayerID);
       setOtherPlayers([...l.otherPlayers]);
       setRooms([...l.rooms]);
-      let foundOurPlayerInARoom = false
-      for (const r of l.rooms) {
-        for (const playerID of r.playersInRoom) {
-          if (playerID === l.ourPlayerID) {
-            setSelectedRoom(r)
-            foundOurPlayerInARoom = true
-          }
-        }
-      }
-      if (!foundOurPlayerInARoom) {
-        setSelectedRoom(undefined)
-      }
+      setSelectedRoomIfOurUserIsInRoom(l)
     });
     lobby.addListener("connectionResponse", (l) => {
       setOurPlayerID(l.ourPlayerID);
@@ -43,20 +32,24 @@ export default function Lobby(): JSX.Element {
     lobby.addListener("RoomUpdate", (l) => {
       setLobby(l)
       setRooms([...l.rooms]);
-      let foundOurPlayerInARoom = false
-      for (const r of l.rooms) {
-        for (const playerID of r.playersInRoom) {
-          if (playerID === l.ourPlayerID) {
-            setSelectedRoom(r)
-            foundOurPlayerInARoom = true
-          }
-        }
-      }
-      if (!foundOurPlayerInARoom) {
-        setSelectedRoom(undefined)
-      }
+      setSelectedRoomIfOurUserIsInRoom(l)
     })
   });
+
+  function setSelectedRoomIfOurUserIsInRoom(l: any) {
+    let foundOurPlayerInARoom = false
+    for (const r of l.rooms) {
+      for (const playerID of r.playersInRoom) {
+        if (playerID === l.ourPlayerID) {
+          setSelectedRoom(r)
+          foundOurPlayerInARoom = true
+        }
+      }
+    }
+    if (!foundOurPlayerInARoom) {
+      setSelectedRoom(undefined)
+    }
+  }
 
   if (lobby.ourPlayerID === "") {
     return (
@@ -92,6 +85,9 @@ export default function Lobby(): JSX.Element {
             <Button onClick={() => {
               lobby.joinRoom(r.id)
               }}>Join Room</Button>
+              <Button onClick={() => {
+              lobby.deleteRoom(r.id)
+              }}>Delete Room</Button>
             </li>
           ))}
         </ul>

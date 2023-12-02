@@ -27,8 +27,8 @@ export default class Lobby extends EventEmitter {
       }
     }
 
+    this.rooms = [];
     if (jsonMessage.Lobby.Rooms != null) {
-      this.rooms = [];
       for (const room of jsonMessage.Lobby.Rooms) {
         let playersInRoom: string[] = []
         for (const playerID in room.PlayerConnections) {
@@ -55,8 +55,8 @@ export default class Lobby extends EventEmitter {
       }
       this.otherPlayers = this.otherPlayers.sort();
     }
+    this.rooms = [];
     if (jsonMessage.Lobby.Rooms != null) {
-      this.rooms = [];
       for (const room of jsonMessage.Lobby.Rooms) {
         let playersInRoom: string[] = []
         for (const playerID in room.PlayerConnections) {
@@ -138,6 +138,10 @@ export default class Lobby extends EventEmitter {
 
   public leaveRoom(roomID: number) {
     this.ourPlayerSocket?.send(JSON.stringify({cmdType: "leaveRoom", roomID: roomID}))
+  }
+
+  public deleteRoom(roomID: number) {
+    this.ourPlayerSocket?.send(JSON.stringify({cmdType: "deleteRoom", roomID: roomID}))
   }
 }
 

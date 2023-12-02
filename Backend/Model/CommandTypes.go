@@ -21,6 +21,11 @@ type RoomUpdate struct {
 	Room    Room
 }
 
+type RoomDelete struct {
+	CmdType string
+	RoomID  int
+}
+
 type Command interface {
-	NewRoomCommand | ConnectCommand | LobbyUpdate | RoomUpdate
+	NewRoomCommand | ConnectCommand | LobbyUpdate | RoomUpdate | RoomDelete
 }
