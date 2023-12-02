@@ -10,6 +10,7 @@ import (
 type Lobby struct {
 	Rooms          []Room
 	PlayersInLobby map[string]*websocket.Conn
+	NextRoomID     int
 }
 
 func (l *Lobby) JoinLobby(playerID string, conn *websocket.Conn) {
@@ -47,11 +48,10 @@ func (l *Lobby) JoinLobby(playerID string, conn *websocket.Conn) {
 			fmt.Printf("joining room %v", int(roomID.(float64)))
 		}
 		if cmdType == "createRoom" {
-			roomID := msg["roomID"]
-			l.createNewRoom(playerID, int(roomID.(float64)), conn)
-			l.sendNewRoomMessageToAllUsers(int(roomID.(float64)))
-			fmt.Printf("creating room %v \n", int(roomID.(float64)))
-
+			l.createNewRoom(playerID, l.NextRoomID, conn)
+			l.sendNewRoomMessageToAllUsers(l.NextRoomID)
+			fmt.Printf("creating room %v \n", l.NextRoomID)
+			l.NextRoomID += 1
 		}
 		if cmdType == "deleteRoom" {
 			roomID := msg["roomID"]

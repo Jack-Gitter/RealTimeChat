@@ -6,7 +6,6 @@ export default class Lobby extends EventEmitter {
   public otherPlayers: string[];
   public ourPlayerID: string;
   public ourPlayerSocket: WebSocket | undefined;
-  public static nextRoomID: number = 0;
 
   constructor() {
     super();
@@ -88,9 +87,7 @@ export default class Lobby extends EventEmitter {
   }
 
   public createNewRoom() {
-    this.ourPlayerSocket?.send(
-      JSON.stringify({ cmdType: "createRoom", roomID: Lobby.nextRoomID++ }),
-    );
+    this.ourPlayerSocket?.send(JSON.stringify({ cmdType: "createRoom" }));
   }
 }
 
