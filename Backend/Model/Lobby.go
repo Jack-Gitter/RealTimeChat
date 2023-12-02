@@ -46,10 +46,11 @@ func (l *Lobby) JoinLobby(playerID string, conn *websocket.Conn) {
 			roomID := msg["roomID"]
 			l.joinRoom(playerID, int(roomID.(float64)), conn)
 			fmt.Printf("joining room %v", int(roomID.(float64)))
+			// sendJoinedRoomMessage
 		}
 		if cmdType == "createRoom" {
 			l.createNewRoom(playerID, l.NextRoomID, conn)
-			l.sendNewRoomMessageToAllUsersInLobby(l.NextRoomID)
+			l.sendNewRoomMessage(l.NextRoomID)
 			fmt.Printf("creating room %v \n", l.NextRoomID)
 			l.NextRoomID += 1
 		}
@@ -57,13 +58,13 @@ func (l *Lobby) JoinLobby(playerID string, conn *websocket.Conn) {
 			roomID := msg["roomID"]
 			l.deleteRoom(int(roomID.(float64)))
 			fmt.Printf("deleting room %v \n", int(roomID.(float64)))
-
-			// broadcast the updated model
+			// sendDeletedRoomMessage
 		}
 		if cmdType == "leaveRoom" {
 			roomID := msg["roomID"]
 			l.leaveRoom(playerID, int(roomID.(float64)))
 			fmt.Printf("leaving room %v \n", int(roomID.(float64)))
+			// sendLeaveRoomMessage
 
 		}
 	}
@@ -102,7 +103,7 @@ func (l *Lobby) findRoomIndex(roomID int) int {
 	})
 }
 
-func (l *Lobby) sendNewRoomMessageToAllUsersInLobby(roomID int) {
+func (l *Lobby) sendNewRoomMessage(roomID int) {
 	idx := l.findRoomIndex(roomID)
 	room := l.Rooms[idx]
 	fmt.Printf("sending room %v", room)
