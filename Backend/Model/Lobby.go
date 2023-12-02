@@ -71,8 +71,6 @@ func (l *Lobby) JoinLobby(playerID string, conn *websocket.Conn) {
 
 func (l *Lobby) createNewRoom(playerID string, roomID int, conn *websocket.Conn) error {
 	l.Rooms = append(l.Rooms, Room{SecondsLeftInRound: 10, Id: roomID, PlayerConnections: make(map[string]*websocket.Conn)})
-	idx := len(l.Rooms) - 1
-	l.Rooms[idx].PlayerConnections[playerID] = conn
 	return nil
 }
 
