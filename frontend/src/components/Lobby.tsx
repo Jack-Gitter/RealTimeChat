@@ -1,20 +1,35 @@
 import { useEffect, useState } from "react";
 import useLobby from "../hooks/useLobby";
+import { Button, Heading } from "@chakra-ui/react";
+import Room from "../classes/Room";
 
 export default function Lobby(): JSX.Element {
   let LobbyComponent = useLobby();
-
   let lobby = LobbyComponent.lobby;
   let setLobby = LobbyComponent.setLobby;
   let [ourPlayerID, setOurPlayerID] = useState(lobby.ourPlayerID);
   let [otherPlayers, setOtherPlayers] = useState(lobby.otherPlayers);
   let [rooms, setRooms] = useState(lobby.rooms);
+  let [selectedRoom, setSelectedRoom] = useState<Room | undefined>(undefined)
 
+  
   useEffect(() => {
     lobby.addListener("LobbyUpdate", (l) => {
       setOurPlayerID(l.ourPlayerID);
       setOtherPlayers([...l.otherPlayers]);
       setRooms([...l.rooms]);
+      let foundOurPlayerInARoom = false
+      for (const r of l.rooms) {
+        for (const playerID of r.playersInRoom) {
+          if (playerID === l.ourPlayerID) {
+            setSelectedRoom(r)
+            foundOurPlayerInARoom = true
+          }
+        }
+      }
+      if (!foundOurPlayerInARoom) {
+        setSelectedRoom(undefined)
+      }
     });
     lobby.addListener("connectionResponse", (l) => {
       setOurPlayerID(l.ourPlayerID);
@@ -28,22 +43,35 @@ export default function Lobby(): JSX.Element {
     lobby.addListener("RoomUpdate", (l) => {
       setLobby(l)
       setRooms([...l.rooms]);
+      let foundOurPlayerInARoom = false
+      for (const r of l.rooms) {
+        for (const playerID of r.playersInRoom) {
+          if (playerID === l.ourPlayerID) {
+            setSelectedRoom(r)
+            foundOurPlayerInARoom = true
+          }
+        }
+      }
+      if (!foundOurPlayerInARoom) {
+        setSelectedRoom(undefined)
+      }
     })
   });
 
   if (lobby.ourPlayerID === "") {
     return (
       <div>
-        <button
+        <Heading as='h1' size='xl'>Song Battle Royale</Heading>
+        <Button
           onClick={() => {
             lobby.addUserToLobby();
           }}
         >
-          Join Lobby
-        </button>
+          Enter the lobby
+        </Button>
       </div>
     );
-  } else {
+  } else if (!selectedRoom) {
     return (
       <div>
         <h1>Song Battle Royale Lobby</h1>
@@ -65,13 +93,30 @@ export default function Lobby(): JSX.Element {
             RoundsElapsed: {r.roundsElapsed}
             PlayersInRoom: {r.playersInRoom}
             PlayersInNextRound: {r.playersInNextRound}
-            <button onClick={() => lobby.joinRoom(r.id)}>Join Room</button>
-            <button onClick={() => lobby.leaveRoom(r.id)}>Leave room</button>
+            <Button onClick={() => {
+              lobby.joinRoom(r.id)
+              }}>Join Room</Button>
+            <Button onClick={() => {
+              lobby.leaveRoom(r.id)
+              }}>Leave room</Button>
             </li>
           ))}
         </ul>
-        <button onClick={() => lobby.createNewRoom()}>CreateNewRoom</button>
+        <Button onClick={() => lobby.createNewRoom()}>CreateNewRoom</Button>
       </div>
     );
+  } else if (selectedRoom) {
+    return (
+      <>
+      we have selected a room
+      <Button onClick={() => {
+          lobby.leaveRoom(selectedRoom?.id as number)
+      }}>Leave room</Button>
+      </>
+    )
+  } else {
+    return (
+      <></>
+    )
   }
 }
