@@ -77,16 +77,23 @@ func (l *Lobby) createNewRoom(playerID string, roomID int, conn *websocket.Conn)
 func (l *Lobby) joinRoom(playerID string, roomID int, conn *websocket.Conn) {
 	idx := l.findRoomIndex(roomID)
 	l.Rooms[idx].PlayerConnections[playerID] = conn
+	delete(l.PlayersInLobby, playerID)
 }
 
 func (l *Lobby) deleteRoom(roomID int) {
 	idx := l.findRoomIndex(roomID)
+	conns := l.Rooms[idx].PlayerConnections
+	for k, v := range conns {
+		l.PlayersInLobby[k] = v
+	}
 	l.Rooms = append(l.Rooms[:idx], l.Rooms[idx+1:]...)
 }
 
 func (l *Lobby) leaveRoom(playerID string, roomID int) {
 	idx := l.findRoomIndex(roomID)
+	conn := l.Rooms[idx].PlayerConnections[playerID]
 	delete(l.Rooms[idx].PlayerConnections, playerID)
+	l.PlayersInLobby[playerID] = conn
 }
 
 func (l *Lobby) findRoomIndex(roomID int) int {
