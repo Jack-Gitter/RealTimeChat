@@ -75,34 +75,36 @@ export default function Lobby(): JSX.Element {
             <li>{pID}</li>
           ))}
         </ul>
-        <h3>Available rooms are</h3>
-        <ul>
-          {rooms.map((r, index) => (
-            <li key={index}>
-            Room ID:  {r.id}
-            IsInProgress: {r.isInProgress.toString()}
-            PlayersInRoom: {r.playersInRoom}
-            <Button onClick={() => {
-              lobby.joinRoom(r.id)
-              }}>Join Room</Button>
-              <Button onClick={() => {
-              lobby.deleteRoom(r.id)
-              }}>Delete Room</Button>
-            </li>
-          ))}
-        </ul>
         <Button onClick={() => lobby.createNewRoom()}>CreateNewRoom</Button>
+
+        <h3>Available rooms are</h3>
+        
+          {rooms.map((r, index) => (
+            <ul key={index}>
+            
+            <li>Room ID:  {r.id}</li>
+            <li>IsInProgress: {r.isInProgress.toString()}</li>
+            <li>PlayersInRoom: {r.playersInRoom}</li>
+            <li><Button onClick={() => {
+              lobby.joinRoom(r.id)
+              }}>Join Room</Button></li>
+            <li><Button onClick={() => {
+              lobby.deleteRoom(r.id)
+              }}>Delete Room</Button></li>
+            </ul>
+          ))}
+
       </div>
     );
   } else if (selectedRoom) {
     return (
-      <>
-      roomID: {selectedRoom.id}
-      playersInRoom: {selectedRoom.playersInRoom}
-      <Button onClick={() => {
+      <ul>
+      <li>roomID: {selectedRoom.id}</li>
+      {selectedRoom.playersInRoom.map(p => <li>{p}</li>)}
+      <li><Button onClick={() => {
           lobby.leaveRoom(selectedRoom?.id as number)
-      }}>Leave room</Button>
-      </>
+      }}>Leave room</Button></li>
+      </ul>
     )
   } else {
     return (

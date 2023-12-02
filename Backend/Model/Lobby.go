@@ -27,6 +27,25 @@ func (l *Lobby) JoinLobby(playerID string, conn *websocket.Conn) {
 			// remove them from the lobby and all rooms they are in here
 			fmt.Println(err)
 			conn.Close()
+			for pID := range l.PlayersInLobby {
+				if pID == playerID {
+					delete(l.PlayersInLobby, playerID)
+					broadcastMessageToLobby[LobbyUpdate](LobbyUpdate{CmdType: "LobbyUpdate", Lobby: *l}, l.PlayersInLobby)
+					return
+				}
+			}
+			for _, r := range l.Rooms {
+				for pID := range r.PlayerConnections {
+					if pID == playerID {
+						delete(r.PlayerConnections, playerID)
+						broadcastMessageToRoom[RoomUpdate](RoomUpdate{CmdType: "RoomUpdate", Room: r}, r)
+						broadcastMessageToLobby[LobbyUpdate](LobbyUpdate{CmdType: "LobbyUpdate", Lobby: *l}, l.PlayersInLobby)
+						return
+					}
+				}
+			}
+			// remove this playerID from all room connections and lobby connections
+			// send lobby update if they are found in the lobby, send room update if they are found in a room
 			return
 		}
 
