@@ -17,9 +17,8 @@ type LobbyUpdate struct {
 }
 
 type JoinedRoom struct {
-	CmdType  string
-	RoomID   int
-	PlayerID string
+	CmdType string
+	Room    Room
 }
 
 type Command interface {

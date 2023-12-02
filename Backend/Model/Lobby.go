@@ -113,7 +113,7 @@ func (l *Lobby) sendNewRoomMessage(roomID int) {
 func (l *Lobby) sendJoinedRoomMessage(playerID string, roomID int) {
 	idx := l.findRoomIndex(roomID)
 	room := l.Rooms[idx]
-	cmd1 := JoinedRoom{CmdType: "JoinedRoom", RoomID: roomID, PlayerID: playerID}
+	cmd1 := JoinedRoom{CmdType: "JoinedRoom", Room: room}
 	cmd2 := LobbyUpdate{CmdType: "LobbyUpdate", Lobby: *l}
 	broadcastMessageToRoom[JoinedRoom](cmd1, room)
 	broadcastMessageToLobby[LobbyUpdate](cmd2, l.PlayersInLobby)

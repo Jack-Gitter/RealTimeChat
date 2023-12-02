@@ -58,14 +58,40 @@ export default class Lobby extends EventEmitter {
     if (jsonMessage.Lobby.Rooms != null) {
       this.rooms = [];
       for (const room of jsonMessage.Lobby.Rooms) {
-        let newRoom = new Room(room.Id);
+        let playersInRoom: string[] = []
+        for (const playerID in room.PlayerConnections) {
+          playersInRoom.push(playerID)
+        }
+        let newRoom = new Room(room.Id, room.IsInProgress, room.CurrentSongToGuess, room.SecondsLeftInRound, room.RoundsElapsed, playersInRoom, []);
         this.rooms.push(newRoom);
       }
     }
     this.emit("LobbyUpdate", this);
   }
 
+  private handledJoinedRoom(jsonMessage: any) {
+    console.log("new room command is ")
+    console.log(jsonMessage)
+    let room = this.rooms.find(r => r.id === jsonMessage.Room.Id)
+      if (room) {
+        room.isInProgress = jsonMessage.Room.IsInProgress
+        room.currentSongToGuess = jsonMessage.Room.CurrentSongToGuess
+        room.secondsLeftInRound = jsonMessage.Room.SecondsLeftInRound
+        room.roundsElapsed = jsonMessage.Room.RoundsElapsed
+        room.playersInRoom = []
+        for (const playerID in jsonMessage.Room.PlayerConnections) {
+          room.playersInRoom.push(playerID)
+        }
+        room.playersInNextRound = []
+        for (const playerID in jsonMessage.Room.PlayersInNextRound) {
+          room.playersInNextRound.push(playerID)
+        }
+        this.emit("JoinedRoom", this)
+      }
+  }
+
   public handleNewRoomResponse(jsonMessage: any) {
+    
     let jsonRoom = jsonMessage.Room;
     let newRoom = new Room(jsonRoom.Id);
     this.rooms.push(newRoom);
@@ -86,6 +112,9 @@ export default class Lobby extends EventEmitter {
         }
         if (cmdType === "NewRoom") {
           this.handleNewRoomResponse(jsonMessage);
+        }
+        if (cmdType === "JoinedRoom") {
+          this.handledJoinedRoom(jsonMessage);
         }
       } catch (err) {
         if (err instanceof Error) {

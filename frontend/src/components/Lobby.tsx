@@ -25,6 +25,10 @@ export default function Lobby(): JSX.Element {
       setLobby(l);
       setRooms([...l.rooms]);
     });
+    lobby.addListener("JoinedRoom", (l) => {
+      setLobby(l)
+      setRooms([...l.rooms]);
+    })
   });
 
   if (lobby.ourPlayerID === "") {
