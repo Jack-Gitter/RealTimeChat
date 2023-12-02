@@ -52,8 +52,17 @@ export default function Lobby(): JSX.Element {
         </ul>
         <h3>Available rooms are</h3>
         <ul>
-          {rooms.map((r) => (
-            <li>{r.id}</li>
+          {rooms.map((r, index) => (
+            <li key={index}>
+            Room ID:  {r.id}
+            IsInProgress: {r.isInProgress}
+            CurentSongToGuess: {r.currentSongToGuess}
+            SecondsLeftInRound: {r.secondsLeftInRound}
+            RoundsElapsed: {r.roundsElapsed}
+            PlayersInRoom: {r.playersInRoom}
+            PlayersInNextRound: {r.playersInNextRound}
+            <button onClick={() => lobby.joinRoom(r.id)}>Join Room</button>
+            </li>
           ))}
         </ul>
         <button onClick={() => lobby.createNewRoom()}>CreateNewRoom</button>

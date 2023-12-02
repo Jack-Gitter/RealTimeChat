@@ -6,8 +6,8 @@ export default class Room extends EventEmitter {
   public currentSongToGuess: string;
   public secondsLeftInRound: number;
   public roundsElapsed: number;
-  public playerConnections: Map<string, WebSocket[]>;
-  public playersInNextRound: Set<string>;
+  public playersInRoom: string[]
+  public playersInNextRound: string[];
 
   constructor(
     id: number,
@@ -15,16 +15,16 @@ export default class Room extends EventEmitter {
     currentSongToGuess?: string,
     secondsLeftInRound?: number,
     roundsElapsed?: number,
-    playerConnection?: Map<string, WebSocket[]>,
-    playersInNextRound?: Set<string>,
+    playersInRoom?: string[],
+    playersInNextRound?: string[],
   ) {
     super();
     this.id = id;
-    this.isInProgress = false;
-    this.currentSongToGuess = "";
-    this.secondsLeftInRound = 10;
-    this.roundsElapsed = 0;
-    this.playerConnections = new Map();
-    this.playersInNextRound = new Set();
+    this.isInProgress = isInProgress ? isInProgress : false
+    this.currentSongToGuess = currentSongToGuess ? currentSongToGuess : "";
+    this.secondsLeftInRound = secondsLeftInRound ? secondsLeftInRound : 10
+    this.roundsElapsed = roundsElapsed ? roundsElapsed : 0
+    this.playersInNextRound = playersInNextRound ? playersInNextRound : []
+    this.playersInRoom = playersInRoom ? playersInRoom : []
   }
 }

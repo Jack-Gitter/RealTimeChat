@@ -45,8 +45,7 @@ func (l *Lobby) JoinLobby(playerID string, conn *websocket.Conn) {
 		if cmdType == "joinRoom" {
 			roomID := msg["roomID"]
 			l.joinRoom(playerID, int(roomID.(float64)), conn)
-			fmt.Printf("joining room %v", int(roomID.(float64)))
-			// sendJoinedRoomMessage
+			l.sendJoinedRoomMessage(playerID, int(roomID.(float64)))
 		}
 		if cmdType == "createRoom" {
 			l.createNewRoom(playerID, l.NextRoomID, conn)
@@ -108,7 +107,26 @@ func (l *Lobby) sendNewRoomMessage(roomID int) {
 	room := l.Rooms[idx]
 	fmt.Printf("sending room %v", room)
 	cmd := NewRoomCommand{CmdType: "NewRoom", Room: room}
-	for _, c := range l.PlayersInLobby {
-		c.WriteJSON(cmd)
+	broadcastMessageToLobby[NewRoomCommand](cmd, l.PlayersInLobby)
+}
+
+func (l *Lobby) sendJoinedRoomMessage(playerID string, roomID int) {
+	idx := l.findRoomIndex(roomID)
+	room := l.Rooms[idx]
+	cmd1 := JoinedRoom{CmdType: "JoinedRoom", RoomID: roomID, PlayerID: playerID}
+	cmd2 := LobbyUpdate{CmdType: "LobbyUpdate", Lobby: *l}
+	broadcastMessageToRoom[JoinedRoom](cmd1, room)
+	broadcastMessageToLobby[LobbyUpdate](cmd2, l.PlayersInLobby)
+}
+
+func broadcastMessageToLobby[T Command](cmd T, conns map[string]*websocket.Conn) {
+	for _, conn := range conns {
+		conn.WriteJSON(cmd)
+	}
+}
+
+func broadcastMessageToRoom[T Command](cmd T, room Room) {
+	for _, conn := range room.PlayerConnections {
+		conn.WriteJSON(cmd)
 	}
 }

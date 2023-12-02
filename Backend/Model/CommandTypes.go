@@ -15,3 +15,13 @@ type LobbyUpdate struct {
 	CmdType string
 	Lobby   Lobby
 }
+
+type JoinedRoom struct {
+	CmdType  string
+	RoomID   int
+	PlayerID string
+}
+
+type Command interface {
+	NewRoomCommand | ConnectCommand | LobbyUpdate | JoinedRoom
+}

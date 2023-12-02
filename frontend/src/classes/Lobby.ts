@@ -19,23 +19,33 @@ export default class Lobby extends EventEmitter {
     this.ourPlayerID = jsonMessage.OurPlayerID;
 
     for (const playerID in jsonMessage.Lobby.PlayersInLobby) {
-      this.otherPlayers.push(playerID);
+      if (
+        playerID !== this.ourPlayerID &&
+        this.otherPlayers.find((pID) => pID === playerID) === undefined
+      ) {
+        this.otherPlayers.push(playerID);
+      }
     }
 
     if (jsonMessage.Lobby.Rooms != null) {
       this.rooms = [];
       for (const room of jsonMessage.Lobby.Rooms) {
-        let newRoom = new Room(room.Id);
+        let playersInRoom: string[] = []
+        for (const playerID in room.PlayerConnections) {
+          playersInRoom.push(playerID)
+        }
+        let newRoom = new Room(room.Id, room.IsInProgress, room.CurrentSongToGuess, room.SecondsLeftInRound, room.RoundsElapsed, playersInRoom, []);
         this.rooms.push(newRoom);
       }
     }
 
-    console.log("outputting json mesage from connection response");
-    console.log(jsonMessage);
     this.emit("connectionResponse", this);
   }
 
   private handleLobbyUpdate(jsonMessage: any) {
+    if (jsonMessage.Lobby.PlayersInLobby != null) {
+      this.otherPlayers = []
+    } 
     for (const playerID in jsonMessage.Lobby.PlayersInLobby) {
       if (
         playerID !== this.ourPlayerID &&
@@ -90,6 +100,10 @@ export default class Lobby extends EventEmitter {
 
   public createNewRoom() {
     this.ourPlayerSocket?.send(JSON.stringify({ cmdType: "createRoom" }));
+  }
+
+  public joinRoom(roomID: number) {
+    this.ourPlayerSocket?.send(JSON.stringify({cmdType: "joinRoom", roomID: roomID}))
   }
 }
 
