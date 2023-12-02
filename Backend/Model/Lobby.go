@@ -45,7 +45,7 @@ func (l *Lobby) JoinLobby(playerID string, conn *websocket.Conn) {
 		if cmdType == "joinRoom" {
 			roomID := msg["roomID"]
 			l.joinRoom(playerID, int(roomID.(float64)), conn)
-			l.sendJoinedRoomMessage(playerID, int(roomID.(float64)))
+			l.sendJoinedRoomMessage(int(roomID.(float64)))
 		}
 		if cmdType == "createRoom" {
 			l.createNewRoom(playerID, l.NextRoomID, conn)
@@ -53,19 +53,19 @@ func (l *Lobby) JoinLobby(playerID string, conn *websocket.Conn) {
 			fmt.Printf("creating room %v \n", l.NextRoomID)
 			l.NextRoomID += 1
 		}
+		if cmdType == "leaveRoom" {
+			roomID := msg["roomID"]
+			l.leaveRoom(playerID, int(roomID.(float64)))
+			fmt.Printf("leaving room %v \n", int(roomID.(float64)))
+			l.sendLeaveRoomMessage(int(roomID.(float64)))
+		}
 		if cmdType == "deleteRoom" {
 			roomID := msg["roomID"]
 			l.deleteRoom(int(roomID.(float64)))
 			fmt.Printf("deleting room %v \n", int(roomID.(float64)))
 			// sendDeletedRoomMessage
 		}
-		if cmdType == "leaveRoom" {
-			roomID := msg["roomID"]
-			l.leaveRoom(playerID, int(roomID.(float64)))
-			fmt.Printf("leaving room %v \n", int(roomID.(float64)))
-			// sendLeaveRoomMessage
 
-		}
 	}
 }
 
@@ -110,13 +110,20 @@ func (l *Lobby) sendNewRoomMessage(roomID int) {
 	broadcastMessageToLobby[NewRoomCommand](cmd, l.PlayersInLobby)
 }
 
-func (l *Lobby) sendJoinedRoomMessage(playerID string, roomID int) {
+func (l *Lobby) sendJoinedRoomMessage(roomID int) {
 	idx := l.findRoomIndex(roomID)
 	room := l.Rooms[idx]
-	cmd1 := JoinedRoom{CmdType: "JoinedRoom", Room: room}
+	cmd1 := RoomUpdate{CmdType: "RoomUpdate", Room: room}
 	cmd2 := LobbyUpdate{CmdType: "LobbyUpdate", Lobby: *l}
-	broadcastMessageToRoom[JoinedRoom](cmd1, room)
+	broadcastMessageToRoom[RoomUpdate](cmd1, room)
 	broadcastMessageToLobby[LobbyUpdate](cmd2, l.PlayersInLobby)
+}
+
+func (l *Lobby) sendLeaveRoomMessage(roomID int) {
+	idx := l.findRoomIndex(roomID)
+	room := l.Rooms[idx]
+	broadcastMessageToRoom[RoomUpdate](RoomUpdate{CmdType: "RoomUpdate", Room: room}, room)
+	broadcastMessageToLobby[LobbyUpdate](LobbyUpdate{CmdType: "LobbyUpdate", Lobby: *l}, l.PlayersInLobby)
 }
 
 func broadcastMessageToLobby[T Command](cmd T, conns map[string]*websocket.Conn) {

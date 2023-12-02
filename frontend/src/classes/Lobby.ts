@@ -69,7 +69,7 @@ export default class Lobby extends EventEmitter {
     this.emit("LobbyUpdate", this);
   }
 
-  private handledJoinedRoom(jsonMessage: any) {
+  private handleRoomUpdate(jsonMessage: any) {
     console.log("new room command is ")
     console.log(jsonMessage)
     let room = this.rooms.find(r => r.id === jsonMessage.Room.Id)
@@ -86,7 +86,7 @@ export default class Lobby extends EventEmitter {
         for (const playerID in jsonMessage.Room.PlayersInNextRound) {
           room.playersInNextRound.push(playerID)
         }
-        this.emit("JoinedRoom", this)
+        this.emit("RoomUpdate", this)
       }
   }
 
@@ -113,8 +113,8 @@ export default class Lobby extends EventEmitter {
         if (cmdType === "NewRoom") {
           this.handleNewRoomResponse(jsonMessage);
         }
-        if (cmdType === "JoinedRoom") {
-          this.handledJoinedRoom(jsonMessage);
+        if (cmdType === "RoomUpdate") {
+          this.handleRoomUpdate(jsonMessage);
         }
       } catch (err) {
         if (err instanceof Error) {
@@ -133,6 +133,10 @@ export default class Lobby extends EventEmitter {
 
   public joinRoom(roomID: number) {
     this.ourPlayerSocket?.send(JSON.stringify({cmdType: "joinRoom", roomID: roomID}))
+  }
+
+  public leaveRoom(roomID: number) {
+    this.ourPlayerSocket?.send(JSON.stringify({cmdType: "leaveRoom", roomID: roomID}))
   }
 }
 

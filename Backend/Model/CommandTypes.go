@@ -16,11 +16,11 @@ type LobbyUpdate struct {
 	Lobby   Lobby
 }
 
-type JoinedRoom struct {
+type RoomUpdate struct {
 	CmdType string
 	Room    Room
 }
 
 type Command interface {
-	NewRoomCommand | ConnectCommand | LobbyUpdate | JoinedRoom
+	NewRoomCommand | ConnectCommand | LobbyUpdate | RoomUpdate
 }

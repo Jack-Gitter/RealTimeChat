@@ -25,7 +25,7 @@ export default function Lobby(): JSX.Element {
       setLobby(l);
       setRooms([...l.rooms]);
     });
-    lobby.addListener("JoinedRoom", (l) => {
+    lobby.addListener("RoomUpdate", (l) => {
       setLobby(l)
       setRooms([...l.rooms]);
     })
@@ -66,6 +66,7 @@ export default function Lobby(): JSX.Element {
             PlayersInRoom: {r.playersInRoom}
             PlayersInNextRound: {r.playersInNextRound}
             <button onClick={() => lobby.joinRoom(r.id)}>Join Room</button>
+            <button onClick={() => lobby.leaveRoom(r.id)}>Leave room</button>
             </li>
           ))}
         </ul>
