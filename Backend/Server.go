@@ -25,8 +25,10 @@ var lobby = model.Lobby{
 	PlayersInLobby: make(map[string]*websocket.Conn, 0),
 }
 
+var authInformation = api.AuthInformation{}
+
 func main() {
-	api.GetAuthToken()
+	authInformation.SetAuthInformation()
 	http.HandleFunc("/lobby", joinLobbyHandler)
 	http.ListenAndServe("localhost:8080", nil)
 }

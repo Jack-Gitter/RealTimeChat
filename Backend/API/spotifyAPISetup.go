@@ -9,13 +9,13 @@ import (
 	"strings"
 )
 
-type AuthTokenResponse struct {
+type AuthInformation struct {
 	Access_Token string
 	Token_type   string
 	Expires_in   int
 }
 
-func GetAuthToken() string {
+func (a *AuthInformation) SetAuthInformation() {
 
 	clientID := "59f4360e54334564923873224b4eae20"
 	clientSecret := "2074e5c3e9ec4a3281446a8e49248d49"
@@ -37,12 +37,11 @@ func GetAuthToken() string {
 		fmt.Println(err)
 	}
 
-	responseJSON := AuthTokenResponse{}
-	json.NewDecoder(res.Body).Decode(&responseJSON)
+	json.NewDecoder(res.Body).Decode(&a)
 
 	if err != nil {
 		fmt.Println(err)
 	}
 
-	return responseJSON.Access_Token
+	fmt.Println(a.Access_Token)
 }
