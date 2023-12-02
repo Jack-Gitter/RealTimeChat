@@ -51,7 +51,11 @@ export default function Lobby(): JSX.Element {
           ))}
         </ul>
         <h3>Available rooms are</h3>
-        <ul>{rooms.map((r) => r.id)}</ul>
+        <ul>
+          {rooms.map((r) => (
+            <li>{r.id}</li>
+          ))}
+        </ul>
         <button onClick={() => lobby.createNewRoom()}>CreateNewRoom</button>
       </div>
     );

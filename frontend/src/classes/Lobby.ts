@@ -55,6 +55,12 @@ export default class Lobby extends EventEmitter {
     this.emit("LobbyUpdate", this);
   }
 
+  public handleNewRoomResponse(jsonMessage: any) {
+    let jsonRoom = jsonMessage.Room;
+    let newRoom = new Room(jsonRoom.Id);
+    this.rooms.push(newRoom);
+    this.emit("NewRoom", this);
+  }
   public addUserToLobby() {
     this.ourPlayerSocket = new WebSocket("ws://localhost:8080/lobby");
 
@@ -69,11 +75,7 @@ export default class Lobby extends EventEmitter {
           this.handleLobbyUpdate(jsonMessage);
         }
         if (cmdType === "NewRoom") {
-          // create a room object here with json message stuff
-          let jsonRoom = jsonMessage.Room;
-          let newRoom = new Room(jsonRoom.Id);
-          this.rooms.push(newRoom);
-          this.emit("NewRoom", this);
+          this.handleNewRoomResponse(jsonMessage);
         }
       } catch (err) {
         if (err instanceof Error) {
