@@ -30,7 +30,6 @@ func (l *Lobby) JoinLobby(playerID string, conn *websocket.Conn) {
 		}
 
 		cmdType := msg["cmdType"]
-		roomID := msg["roomID"]
 
 		if cmdType == "connect" {
 			conn.WriteJSON(ConnectCommand{CmdType: "connectionResponse", Lobby: *l, OurPlayerID: playerID})
@@ -43,22 +42,26 @@ func (l *Lobby) JoinLobby(playerID string, conn *websocket.Conn) {
 		}
 
 		if cmdType == "joinRoom" {
+			roomID := msg["roomID"]
 			l.joinRoom(playerID, int(roomID.(float64)), conn)
 			fmt.Printf("joining room %v", int(roomID.(float64)))
 		}
 		if cmdType == "createRoom" {
+			roomID := msg["roomID"]
 			l.createNewRoom(playerID, int(roomID.(float64)), conn)
 			l.sendNewRoomMessageToAllUsers(int(roomID.(float64)))
 			fmt.Printf("creating room %v \n", int(roomID.(float64)))
 
 		}
 		if cmdType == "deleteRoom" {
+			roomID := msg["roomID"]
 			l.deleteRoom(int(roomID.(float64)))
 			fmt.Printf("deleting room %v \n", int(roomID.(float64)))
 
 			// broadcast the updated model
 		}
 		if cmdType == "leaveRoom" {
+			roomID := msg["roomID"]
 			l.leaveRoom(playerID, int(roomID.(float64)))
 			fmt.Printf("leaving room %v \n", int(roomID.(float64)))
 
@@ -97,6 +100,7 @@ func (l *Lobby) findRoomIndex(roomID int) int {
 func (l *Lobby) sendNewRoomMessageToAllUsers(roomID int) {
 	idx := l.findRoomIndex(roomID)
 	room := l.Rooms[idx]
+	fmt.Printf("sending room %v", room)
 	cmd := NewRoomCommand{CmdType: "NewRoom", Room: room}
 	for _, c := range l.PlayersInLobby {
 		c.WriteJSON(cmd)

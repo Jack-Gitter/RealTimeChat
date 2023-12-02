@@ -6,6 +6,7 @@ export default class Lobby extends EventEmitter {
   public otherPlayers: string[];
   public ourPlayerID: string;
   public ourPlayerSocket: WebSocket | undefined;
+  public static nextRoomID: number = 0;
 
   constructor() {
     super();
@@ -21,7 +22,17 @@ export default class Lobby extends EventEmitter {
     for (const playerID in jsonMessage.Lobby.PlayersInLobby) {
       this.otherPlayers.push(playerID);
     }
-    this.rooms = jsonMessage.Rooms;
+
+    if (jsonMessage.Lobby.Rooms != null) {
+      this.rooms = [];
+      for (const room of jsonMessage.Lobby.Rooms) {
+        let newRoom = new Room(room.Id);
+        this.rooms.push(newRoom);
+      }
+    }
+
+    console.log("outputting json mesage from connection response");
+    console.log(jsonMessage);
     this.emit("connectionResponse", this);
   }
 
@@ -35,11 +46,17 @@ export default class Lobby extends EventEmitter {
       }
       this.otherPlayers = this.otherPlayers.sort();
     }
-    this.rooms = jsonMessage.Rooms;
+    if (jsonMessage.Lobby.Rooms != null) {
+      this.rooms = [];
+      for (const room of jsonMessage.Lobby.Rooms) {
+        let newRoom = new Room(room.Id);
+        this.rooms.push(newRoom);
+      }
+    }
     this.emit("LobbyUpdate", this);
   }
 
-  public async addUserToLobby() {
+  public addUserToLobby() {
     this.ourPlayerSocket = new WebSocket("ws://localhost:8080/lobby");
 
     this.ourPlayerSocket.onmessage = (event) => {
@@ -52,6 +69,13 @@ export default class Lobby extends EventEmitter {
         if (cmdType === "LobbyUpdate") {
           this.handleLobbyUpdate(jsonMessage);
         }
+        if (cmdType === "NewRoom") {
+          // create a room object here with json message stuff
+          let jsonRoom = jsonMessage.Room;
+          let newRoom = new Room(jsonRoom.Id);
+          this.rooms.push(newRoom);
+          this.emit("NewRoom", this);
+        }
       } catch (err) {
         if (err instanceof Error) {
           console.log(err);
@@ -61,6 +85,12 @@ export default class Lobby extends EventEmitter {
 
     this.ourPlayerSocket.onopen = () =>
       this.ourPlayerSocket?.send(JSON.stringify({ cmdType: "connect" }));
+  }
+
+  public createNewRoom() {
+    this.ourPlayerSocket?.send(
+      JSON.stringify({ cmdType: "createRoom", roomID: Lobby.nextRoomID++ }),
+    );
   }
 }
 
