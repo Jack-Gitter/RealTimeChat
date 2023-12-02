@@ -9,6 +9,8 @@ import (
 	"github.com/gorilla/websocket"
 
 	model "SongBattleRoyale/Model"
+
+	api "SongBattleRoyale/API"
 )
 
 var upgrader = websocket.Upgrader{
@@ -24,6 +26,7 @@ var lobby = model.Lobby{
 }
 
 func main() {
+	api.GetAuthToken()
 	http.HandleFunc("/lobby", joinLobbyHandler)
 	http.ListenAndServe("localhost:8080", nil)
 }
