@@ -14,7 +14,6 @@ type Lobby struct {
 }
 
 func (l *Lobby) JoinLobby(playerID string, conn *websocket.Conn) {
-	// set up the listeners for the connection here
 	l.PlayersInLobby[playerID] = conn
 
 	for {
@@ -24,7 +23,6 @@ func (l *Lobby) JoinLobby(playerID string, conn *websocket.Conn) {
 		err := conn.ReadJSON(&msg)
 
 		if err != nil {
-			// remove them from the lobby and all rooms they are in here
 			fmt.Println(err)
 			conn.Close()
 			for pID := range l.PlayersInLobby {
@@ -44,8 +42,6 @@ func (l *Lobby) JoinLobby(playerID string, conn *websocket.Conn) {
 					}
 				}
 			}
-			// remove this playerID from all room connections and lobby connections
-			// send lobby update if they are found in the lobby, send room update if they are found in a room
 			return
 		}
 
