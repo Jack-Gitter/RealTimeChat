@@ -93,7 +93,8 @@ export default class Lobby extends EventEmitter {
   public handleNewRoomResponse(jsonMessage: any) {
     
     let jsonRoom = jsonMessage.Room;
-    let newRoom = new Room(jsonRoom.Id);
+    let newRoom = new Room(jsonRoom.Id, false);
+    console.log(newRoom)
     this.rooms.push(newRoom);
     this.emit("NewRoom", this);
   }

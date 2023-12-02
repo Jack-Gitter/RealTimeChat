@@ -87,18 +87,11 @@ export default function Lobby(): JSX.Element {
           {rooms.map((r, index) => (
             <li key={index}>
             Room ID:  {r.id}
-            IsInProgress: {r.isInProgress}
-            CurentSongToGuess: {r.currentSongToGuess}
-            SecondsLeftInRound: {r.secondsLeftInRound}
-            RoundsElapsed: {r.roundsElapsed}
+            IsInProgress: {r.isInProgress.toString()}
             PlayersInRoom: {r.playersInRoom}
-            PlayersInNextRound: {r.playersInNextRound}
             <Button onClick={() => {
               lobby.joinRoom(r.id)
               }}>Join Room</Button>
-            <Button onClick={() => {
-              lobby.leaveRoom(r.id)
-              }}>Leave room</Button>
             </li>
           ))}
         </ul>
@@ -108,7 +101,8 @@ export default function Lobby(): JSX.Element {
   } else if (selectedRoom) {
     return (
       <>
-      we have selected a room
+      roomID: {selectedRoom.id}
+      playersInRoom: {selectedRoom.playersInRoom}
       <Button onClick={() => {
           lobby.leaveRoom(selectedRoom?.id as number)
       }}>Leave room</Button>
