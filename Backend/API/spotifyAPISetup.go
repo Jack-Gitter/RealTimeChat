@@ -15,6 +15,10 @@ type AuthInformation struct {
 	Expires_in   int
 }
 
+type SongResponse struct {
+	Tracks interface{}
+}
+
 func (a *AuthInformation) SetAuthInformation() {
 
 	clientID := "59f4360e54334564923873224b4eae20"
@@ -44,4 +48,19 @@ func (a *AuthInformation) SetAuthInformation() {
 	}
 
 	fmt.Println(a.Access_Token)
+}
+
+func (a *AuthInformation) GetNewSongs() {
+	// within this method, we need to get the name of the track, and the uri so that we can play it!
+	// we should also add all of these songs to some sort of object somewhere
+	client := http.Client{}
+	songResponse := SongResponse{}
+
+	req, _ := http.NewRequest("GET", "https://api.spotify.com/v1/search?q=track%25100&type=track", nil)
+	req.Header.Set("Authorization", "Bearer "+a.Access_Token)
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+
+	resp, _ := client.Do(req)
+	json.NewDecoder(resp.Body).Decode(&songResponse)
+	fmt.Println(songResponse)
 }

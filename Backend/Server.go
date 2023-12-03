@@ -29,6 +29,7 @@ var authInformation = api.AuthInformation{}
 
 func main() {
 	authInformation.SetAuthInformation()
+	authInformation.GetNewSongs()
 	http.HandleFunc("/lobby", joinLobbyHandler)
 	http.ListenAndServe("localhost:8080", nil)
 }
