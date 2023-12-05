@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import useLobby from "../hooks/useLobby";
-import { Button, Heading, Textarea } from "@chakra-ui/react";
+import { Button, Heading, Textarea, Grid, GridItem } from "@chakra-ui/react";
 import Room from "../classes/Room";
+import RoomComponent from "./RoomComponent";
 
 export default function Lobby(): JSX.Element {
   let LobbyComponent = useLobby();
@@ -79,20 +80,16 @@ export default function Lobby(): JSX.Element {
         <Button onClick={() => lobby.createNewRoom()}>CreateNewRoom</Button>
 
         <h3>Available rooms are</h3>
+        <Grid templateColumns='repeat(5, 500fr)' gap={40}>
+        
         
           {rooms.map((r, index) => (
-            <ul key={index}>
+            <GridItem w='100%' h='70' bg='blue.500' key={index}>
+              <RoomComponent r={r} />
             
-            <li>Room ID:  {r.id}</li>
-            <li>PlayersInRoom: {r.playersInRoom}</li>
-            <li><Button onClick={() => {
-              lobby.joinRoom(r.id)
-              }}>Join Room</Button></li>
-            <li><Button onClick={() => {
-              lobby.deleteRoom(r.id)
-              }}>Delete Room</Button></li>
-            </ul>
+            </GridItem>
           ))}
+          </Grid>
 
       </div>
     );
