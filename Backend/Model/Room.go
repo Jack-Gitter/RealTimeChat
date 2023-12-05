@@ -9,7 +9,3 @@ type Room struct {
 	PlayerConnections map[string]*websocket.Conn
 	Messages          [][]string // of the form [[username: message], [username: message], [username, message]] in order
 }
-
-func (r *Room) SendMessage(playerID string, message string) {
-	r.Messages = append(r.Messages, []string{playerID, message})
-}

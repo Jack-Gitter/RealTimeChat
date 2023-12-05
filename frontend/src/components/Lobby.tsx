@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import useLobby from "../hooks/useLobby";
-import { Button, Heading } from "@chakra-ui/react";
+import { Button, Heading, Textarea } from "@chakra-ui/react";
 import Room from "../classes/Room";
 
 export default function Lobby(): JSX.Element {
@@ -11,6 +11,7 @@ export default function Lobby(): JSX.Element {
   let [otherPlayers, setOtherPlayers] = useState(lobby.otherPlayers);
   let [rooms, setRooms] = useState(lobby.rooms);
   let [selectedRoom, setSelectedRoom] = useState<Room | undefined>(undefined)
+  let [textToSend, setTextToSend] = useState("")
 
   
   useEffect(() => {
@@ -103,10 +104,24 @@ export default function Lobby(): JSX.Element {
       <li><Button onClick={() => {
           lobby.leaveRoom(selectedRoom?.id as number)
       }}>Leave room</Button></li>
+
+      <Textarea
+        value={textToSend}
+        onChange={(e) => setTextToSend(e.target.value)}
+        placeholder='Here is a sample placeholder'
+        size='sm'
+      />
+    
+      {selectedRoom.messages.map((playerToMessage: string[]) => {
+        return <li>{playerToMessage[0]}, {playerToMessage[1]}</li>
+      })}
+
       <Button onClick={() => {
-        lobby.sendMessage("hi there", selectedRoom?.id as number)
+        lobby.sendMessage(textToSend, selectedRoom?.id as number)
       }}>sendmessage
       </Button>
+
+
       </ul>
 
     )

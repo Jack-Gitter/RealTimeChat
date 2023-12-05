@@ -101,7 +101,7 @@ func (l *Lobby) sendMessageReceived(roomId int) {
 func (l *Lobby) sendMessage(playerID string, message string, roomID int) {
 	idx := l.findRoomIndex(roomID)
 	room := &l.Rooms[idx]
-	room.SendMessage(playerID, message)
+	room.Messages = append(room.Messages, []string{playerID, message})
 }
 
 func (l *Lobby) createNewRoom(playerID string, roomID int, conn *websocket.Conn) error {
