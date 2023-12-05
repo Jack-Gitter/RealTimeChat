@@ -55,20 +55,20 @@ export default function Lobby(): JSX.Element {
   if (lobby.ourPlayerID === "") {
     return (
       <div>
-        <Heading as='h1' size='xl'>Song Battle Royale</Heading>
+        <Heading as='h1' size='xl'>Dead Simple Chat Application</Heading>
         <Button
           onClick={() => {
             lobby.addUserToLobby();
           }}
         >
-          Enter the lobby
+          Enter the chat lobby
         </Button>
       </div>
     );
   } else if (!selectedRoom) {
     return (
       <div>
-        <h1>Song Battle Royale Lobby</h1>
+        <h1>Chat Room Lobby</h1>
         <h3>Your username is: {ourPlayerID}</h3>
         <h3>Other players in the lobby currently are: </h3>
         <ul>
@@ -120,10 +120,7 @@ export default function Lobby(): JSX.Element {
         lobby.sendMessage(textToSend, selectedRoom?.id as number)
       }}>sendmessage
       </Button>
-
-
       </ul>
-
     )
   } else {
     return (
