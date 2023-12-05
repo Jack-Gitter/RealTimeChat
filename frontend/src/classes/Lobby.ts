@@ -34,7 +34,7 @@ export default class Lobby extends EventEmitter {
         for (const playerID in room.PlayerConnections) {
           playersInRoom.push(playerID)
         }
-        let newRoom = new Room(room.Id, []);
+        let newRoom = new Room(room.Id, playersInRoom);
         this.rooms.push(newRoom);
       }
     }
