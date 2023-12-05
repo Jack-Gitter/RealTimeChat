@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import useLobby from "../hooks/useLobby";
-import { Button, Heading, Textarea, Grid, GridItem } from "@chakra-ui/react";
+import { Button, Heading, Textarea, Grid, GridItem, HStack, Flex, Spacer } from "@chakra-ui/react";
 import Room from "../classes/Room";
 import RoomComponent from "./RoomComponent";
 
@@ -69,27 +69,34 @@ export default function Lobby(): JSX.Element {
   } else if (!selectedRoom) {
     return (
       <div>
-        <h1>Chat Room Lobby</h1>
-        <h3>Your username is: {ourPlayerID}</h3>
-        <h3>Other players in the lobby currently are: </h3>
-        <ul>
-          {otherPlayers.map((pID) => (
-            <li>{pID}</li>
-          ))}
-        </ul>
-        <Button onClick={() => lobby.createNewRoom()}>CreateNewRoom</Button>
+        <div>
+          <Flex>
+            <Spacer />
+            <h1>Chat Room Lobby</h1>
+            <Spacer />
+            <h3>userID: {ourPlayerID}</h3>
+          </Flex>
+        </div>
 
+        <div> 
+          <h3>Other players in the lobby currently are: </h3>
+          <ul>
+            {otherPlayers.map((pID) => (
+              <li>{pID}</li>
+            ))}
+          </ul>
+          <Button onClick={() => lobby.createNewRoom()}>CreateNewRoom</Button>
+
+        </div>
         <h3>Available rooms are</h3>
-        <Grid templateColumns='repeat(5, 500fr)' gap={40}>
-        
-        
+
+        <Grid templateColumns='repeat(5, 5000fr)' gap={40}>
           {rooms.map((r, index) => (
             <GridItem w='100%' h='70' bg='blue.500' key={index}>
-              <RoomComponent r={r} />
-            
+              <RoomComponent r={r} /> 
             </GridItem>
           ))}
-          </Grid>
+        </Grid>
 
       </div>
     );
