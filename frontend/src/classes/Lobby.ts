@@ -34,7 +34,7 @@ export default class Lobby extends EventEmitter {
         for (const playerID in room.PlayerConnections) {
           playersInRoom.push(playerID)
         }
-        let newRoom = new Room(room.Id, room.IsInProgress, room.CurrentSongToGuess, room.SecondsLeftInRound, room.RoundsElapsed, playersInRoom, []);
+        let newRoom = new Room(room.Id, []);
         this.rooms.push(newRoom);
       }
     }
@@ -62,7 +62,7 @@ export default class Lobby extends EventEmitter {
         for (const playerID in room.PlayerConnections) {
           playersInRoom.push(playerID)
         }
-        let newRoom = new Room(room.Id, room.IsInProgress, room.CurrentSongToGuess, room.SecondsLeftInRound, room.RoundsElapsed, playersInRoom, []);
+        let newRoom = new Room(room.Id, playersInRoom);
         this.rooms.push(newRoom);
       }
     }
@@ -74,17 +74,9 @@ export default class Lobby extends EventEmitter {
     console.log(jsonMessage)
     let room = this.rooms.find(r => r.id === jsonMessage.Room.Id)
       if (room) {
-        room.isInProgress = jsonMessage.Room.IsInProgress
-        room.currentSongToGuess = jsonMessage.Room.CurrentSongToGuess
-        room.secondsLeftInRound = jsonMessage.Room.SecondsLeftInRound
-        room.roundsElapsed = jsonMessage.Room.RoundsElapsed
         room.playersInRoom = []
         for (const playerID in jsonMessage.Room.PlayerConnections) {
           room.playersInRoom.push(playerID)
-        }
-        room.playersInNextRound = []
-        for (const playerID in jsonMessage.Room.PlayersInNextRound) {
-          room.playersInNextRound.push(playerID)
         }
         this.emit("RoomUpdate", this)
       }
@@ -93,7 +85,7 @@ export default class Lobby extends EventEmitter {
   public handleNewRoomResponse(jsonMessage: any) {
     
     let jsonRoom = jsonMessage.Room;
-    let newRoom = new Room(jsonRoom.Id, false);
+    let newRoom = new Room(jsonRoom.Id);
     console.log(newRoom)
     this.rooms.push(newRoom);
     this.emit("NewRoom", this);

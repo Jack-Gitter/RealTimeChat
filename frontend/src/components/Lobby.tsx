@@ -83,7 +83,6 @@ export default function Lobby(): JSX.Element {
             <ul key={index}>
             
             <li>Room ID:  {r.id}</li>
-            <li>IsInProgress: {r.isInProgress.toString()}</li>
             <li>PlayersInRoom: {r.playersInRoom}</li>
             <li><Button onClick={() => {
               lobby.joinRoom(r.id)
