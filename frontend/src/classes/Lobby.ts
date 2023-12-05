@@ -92,9 +92,9 @@ export default class Lobby extends EventEmitter {
     this.rooms.push(newRoom);
     this.emit("NewRoom", this);
   }
-  public addUserToLobby() {
+  public addUserToLobby(username: string) {
     this.ourPlayerSocket = new WebSocket("ws://localhost:8080/lobby");
-
+    this.ourPlayerID = username
     this.ourPlayerSocket.onmessage = (event) => {
       try {
         let jsonMessage = JSON.parse(event.data);
@@ -119,7 +119,7 @@ export default class Lobby extends EventEmitter {
     };
 
     this.ourPlayerSocket.onopen = () =>
-      this.ourPlayerSocket?.send(JSON.stringify({ cmdType: "connect" }));
+      this.ourPlayerSocket?.send(JSON.stringify({ cmdType: "connect", username: username}));
   }
 
   public sendMessage(message: string, roomID: number) {

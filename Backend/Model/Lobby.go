@@ -14,28 +14,27 @@ type Lobby struct {
 }
 
 func (l *Lobby) JoinLobby(playerID string, conn *websocket.Conn) {
-	l.PlayersInLobby[playerID] = conn
+
+	var username string
 
 	for {
-
 		var msg map[string]interface{}
-
 		err := conn.ReadJSON(&msg)
 
 		if err != nil {
 			fmt.Println(err)
 			conn.Close()
 			for pID := range l.PlayersInLobby {
-				if pID == playerID {
-					delete(l.PlayersInLobby, playerID)
+				if pID == username {
+					delete(l.PlayersInLobby, username)
 					broadcastMessageToLobby[LobbyUpdate](LobbyUpdate{CmdType: "LobbyUpdate", Lobby: *l}, l.PlayersInLobby)
 					return
 				}
 			}
 			for _, r := range l.Rooms {
 				for pID := range r.PlayerConnections {
-					if pID == playerID {
-						delete(r.PlayerConnections, playerID)
+					if pID == username {
+						delete(r.PlayerConnections, username)
 						broadcastMessageToRoom[RoomUpdate](RoomUpdate{CmdType: "RoomUpdate", Room: r}, r)
 						broadcastMessageToLobby[LobbyUpdate](LobbyUpdate{CmdType: "LobbyUpdate", Lobby: *l}, l.PlayersInLobby)
 						return
@@ -48,9 +47,16 @@ func (l *Lobby) JoinLobby(playerID string, conn *websocket.Conn) {
 		cmdType := msg["cmdType"]
 
 		if cmdType == "connect" {
-			conn.WriteJSON(ConnectCommand{CmdType: "connectionResponse", Lobby: *l, OurPlayerID: playerID})
+			// read again from the socket for the username!!!
+			// then substitute playerID in for the Connectcommand
+
+			uMsg := msg["username"].(string)
+			username = string(uMsg)
+			l.PlayersInLobby[username] = conn
+
+			conn.WriteJSON(ConnectCommand{CmdType: "connectionResponse", Lobby: *l, OurPlayerID: username})
 			for pid, c := range l.PlayersInLobby {
-				if pid != playerID {
+				if pid != username {
 					c.WriteJSON(LobbyUpdate{CmdType: "LobbyUpdate", Lobby: *l})
 				}
 
@@ -59,18 +65,19 @@ func (l *Lobby) JoinLobby(playerID string, conn *websocket.Conn) {
 
 		if cmdType == "joinRoom" {
 			roomID := msg["roomID"]
-			l.joinRoom(playerID, int(roomID.(float64)), conn)
+			fmt.Println(username)
+			l.joinRoom(username, int(roomID.(float64)), conn)
 			l.sendJoinedRoomMessage(int(roomID.(float64)))
 		}
 		if cmdType == "createRoom" {
-			l.createNewRoom(playerID, l.NextRoomID, conn)
+			l.createNewRoom(username, l.NextRoomID, conn)
 			l.sendNewRoomMessage(l.NextRoomID)
 			fmt.Printf("creating room %v \n", l.NextRoomID)
 			l.NextRoomID += 1
 		}
 		if cmdType == "leaveRoom" {
 			roomID := msg["roomID"]
-			l.leaveRoom(playerID, int(roomID.(float64)))
+			l.leaveRoom(username, int(roomID.(float64)))
 			fmt.Printf("leaving room %v \n", int(roomID.(float64)))
 			l.sendLeaveRoomMessage(int(roomID.(float64)))
 		}
@@ -83,7 +90,7 @@ func (l *Lobby) JoinLobby(playerID string, conn *websocket.Conn) {
 		if cmdType == "sendMessage" {
 			roomID := msg["roomID"]
 			message := msg["message"]
-			l.sendMessage(playerID, message.(string), int(roomID.(float64)))
+			l.sendMessage(username, message.(string), int(roomID.(float64)))
 			l.sendMessageReceived(int(roomID.(float64)))
 		}
 

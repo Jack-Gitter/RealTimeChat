@@ -13,7 +13,7 @@ export default function Lobby(): JSX.Element {
   let [rooms, setRooms] = useState(lobby.rooms);
   let [selectedRoom, setSelectedRoom] = useState<Room | undefined>(undefined)
   let [textToSend, setTextToSend] = useState("")
-
+  let [username, setUsername] = useState("")
   
   useEffect(() => {
     lobby.addListener("LobbyUpdate", (l) => {
@@ -57,9 +57,15 @@ export default function Lobby(): JSX.Element {
     return (
       <div>
         <Heading as='h1' size='xl'>Dead Simple Chat Application</Heading>
+        <Textarea
+        value={username}
+        onChange={(e) => setUsername(e.target.value)}
+        placeholder='Here is a sample placeholder'
+        size='sm'
+      />
         <Button
           onClick={() => {
-            lobby.addUserToLobby();
+            lobby.addUserToLobby(username);
           }}
         >
           Enter the chat lobby
@@ -92,7 +98,7 @@ export default function Lobby(): JSX.Element {
 
         <Grid templateColumns='repeat(5, 5000fr)' gap={40}>
           {rooms.map((r, index) => (
-            <GridItem w='100%' h='70' bg='blue.500' key={index}>
+            <GridItem w='100%' h='100%' bg='blue.500' key={index}>
               <RoomComponent r={r} /> 
             </GridItem>
           ))}
