@@ -70,9 +70,10 @@ export default class Lobby extends EventEmitter {
   }
 
   private handleRoomUpdate(jsonMessage: any) {
-    console.log("new room command is ")
-    console.log(jsonMessage)
     let room = this.rooms.find(r => r.id === jsonMessage.Room.Id)
+    console.log(jsonMessage)
+    //let messages = jsonMessage.Room.Messages
+   // console.log(messages)
       if (room) {
         room.playersInRoom = []
         for (const playerID in jsonMessage.Room.PlayerConnections) {
@@ -86,7 +87,7 @@ export default class Lobby extends EventEmitter {
     
     let jsonRoom = jsonMessage.Room;
     let newRoom = new Room(jsonRoom.Id);
-    console.log(newRoom)
+    //console.log(newRoom)
     this.rooms.push(newRoom);
     this.emit("NewRoom", this);
   }
@@ -118,6 +119,10 @@ export default class Lobby extends EventEmitter {
 
     this.ourPlayerSocket.onopen = () =>
       this.ourPlayerSocket?.send(JSON.stringify({ cmdType: "connect" }));
+  }
+
+  public sendMessage(message: string, roomID: number) {
+    this.ourPlayerSocket?.send(JSON.stringify({cmdType: "sendMessage", roomID: roomID, message: message}))
   }
 
   public createNewRoom() {

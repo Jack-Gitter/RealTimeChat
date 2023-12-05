@@ -26,6 +26,12 @@ type RoomDelete struct {
 	RoomID  int
 }
 
+type MessageReceived struct {
+	CmdType  string
+	RoomID   int
+	Messages [][]string
+}
+
 type Command interface {
-	NewRoomCommand | ConnectCommand | LobbyUpdate | RoomUpdate | RoomDelete
+	NewRoomCommand | ConnectCommand | LobbyUpdate | RoomUpdate | RoomDelete | MessageReceived
 }

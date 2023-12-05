@@ -80,12 +80,32 @@ func (l *Lobby) JoinLobby(playerID string, conn *websocket.Conn) {
 			fmt.Printf("deleting room %v \n", int(roomID.(float64)))
 			// sendDeletedRoomMessage
 		}
+		if cmdType == "sendMessage" {
+			roomID := msg["roomID"]
+			message := msg["message"]
+			l.sendMessage(playerID, message.(string), int(roomID.(float64)))
+			l.sendMessageReceived(int(roomID.(float64)))
+		}
 
 	}
 }
 
+func (l *Lobby) sendMessageReceived(roomId int) {
+	idx := l.findRoomIndex(roomId)
+	room := l.Rooms[idx]
+	fmt.Printf("sending room update with %v as the room", room)
+	msg := RoomUpdate{CmdType: "RoomUpdate", Room: room}
+	broadcastMessageToRoom[RoomUpdate](msg, room)
+}
+
+func (l *Lobby) sendMessage(playerID string, message string, roomID int) {
+	idx := l.findRoomIndex(roomID)
+	room := &l.Rooms[idx]
+	room.SendMessage(playerID, message)
+}
+
 func (l *Lobby) createNewRoom(playerID string, roomID int, conn *websocket.Conn) error {
-	l.Rooms = append(l.Rooms, Room{Id: roomID, PlayerConnections: make(map[string]*websocket.Conn)})
+	l.Rooms = append(l.Rooms, Room{Id: roomID, PlayerConnections: make(map[string]*websocket.Conn), Messages: [][]string{}})
 	return nil
 }
 

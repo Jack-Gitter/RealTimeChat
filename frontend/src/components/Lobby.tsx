@@ -103,7 +103,12 @@ export default function Lobby(): JSX.Element {
       <li><Button onClick={() => {
           lobby.leaveRoom(selectedRoom?.id as number)
       }}>Leave room</Button></li>
+      <Button onClick={() => {
+        lobby.sendMessage("hi there", selectedRoom?.id as number)
+      }}>sendmessage
+      </Button>
       </ul>
+
     )
   } else {
     return (
