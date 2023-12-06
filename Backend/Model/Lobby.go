@@ -61,7 +61,7 @@ func (l *Lobby) JoinLobby(playerID string, conn *websocket.Conn) {
 
 			for _, r := range l.Rooms {
 				if _, ok := r.PlayerConnections[username]; ok {
-					conn.WriteJSON(LoginError{CmdType: "lgoinError"})
+					conn.WriteJSON(LoginError{CmdType: "loginError"})
 					loginError = true
 					break
 				}
