@@ -36,6 +36,10 @@ type LoginError struct {
 	CmdType string
 }
 
+type JoinRoomError struct {
+	CmdType string
+}
+
 type Command interface {
 	NewRoomCommand | ConnectCommand | LobbyUpdate | RoomUpdate | RoomDelete | MessageReceived
 }

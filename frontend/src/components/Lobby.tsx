@@ -47,6 +47,7 @@ export default function Lobby(): JSX.Element {
         isClosable: true,
       })
     })
+
   });
 
   function setSelectedRoomIfOurUserIsInRoom(l: any) {

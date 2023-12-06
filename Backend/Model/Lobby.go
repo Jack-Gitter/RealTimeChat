@@ -138,7 +138,7 @@ func (l *Lobby) joinRoom(playerID string, roomID int, conn *websocket.Conn, pass
 		delete(l.PlayersInLobby, playerID)
 		l.sendJoinedRoomMessage(roomID)
 	} else {
-		// send a failed to join room message or something
+		conn.WriteJSON(JoinRoomError{CmdType: "joinRoomError"})
 	}
 }
 

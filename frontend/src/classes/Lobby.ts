@@ -113,6 +113,9 @@ export default class Lobby extends EventEmitter {
         if (cmdType === "loginError") {
           this.emit("loginError")
         }
+        if (cmdType === "joinRoomError") {
+          this.emit("joinRoomError")
+        }
       } catch (err) {
         if (err instanceof Error) {
           console.log(err);

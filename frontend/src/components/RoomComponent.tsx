@@ -1,4 +1,4 @@
-import { Button, Card, CardBody, CardFooter, CardHeader, Divider, HStack, Heading, Input, VStack } from "@chakra-ui/react"
+import { Button, Card, CardBody, CardFooter, CardHeader, Divider, HStack, Heading, Input, VStack, useToast } from "@chakra-ui/react"
 import Room from "../classes/Room"
 import useLobby from "../hooks/useLobby"
 import { useEffect, useState } from "react";
@@ -7,12 +7,22 @@ interface RoomComponentProps {
     r: Room
 }
 export default function RoomComponent({r}: RoomComponentProps): JSX.Element {
+    let toast = useToast()
     let LobbyComponent = useLobby();
     let lobby = LobbyComponent.lobby;
     let [pass, setPass] = useState("")
     
     useEffect(() => {
         console.log("ourplayer is " + lobby.ourPlayerID)
+        lobby.addListener("joinRoomError", () => {
+            toast({
+              title: 'room password is incorrect',
+              description: 'fuck you',
+              status: 'error',
+              duration: 2000,
+              isClosable: true,
+            })
+          })
     })
     return (<>
        <Card background={'#d4d6d9'}>
