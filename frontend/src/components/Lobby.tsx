@@ -3,6 +3,7 @@ import useLobby from "../hooks/useLobby";
 import { Button, Heading, Textarea, Grid, GridItem, HStack, Flex, Spacer, useToast, Input, InputGroup, InputRightElement, Stack, FormControl, InputLeftElement } from "@chakra-ui/react";
 import Room from "../classes/Room";
 import RoomComponent from "./RoomComponent";
+import Welcome from "./Welcome";
 
 export default function Lobby(): JSX.Element {
   let toast = useToast()
@@ -66,52 +67,7 @@ export default function Lobby(): JSX.Element {
 
   if (lobby.ourPlayerID === "") {
     return (
-      /*<div>
-        <Heading as='h1' size='xl'>Dead Simple Chat Application</Heading>
-        <InputGroup width='50%'>
-          <Input placeholder="enter username" value={username} onChange={(e) => setUsername(e.target.value)}/>
-          <InputRightElement width='7rem'>
-            <Button size='sm'
-            onClick={() => {
-              lobby.addUserToLobby(username);
-            }}>
-            Enter Lobby
-          </Button>
-          </InputRightElement>
-        </InputGroup>
-        
-      </div>*/
-      <Flex
-      flexDirection="column"
-      width="100wh"
-      height="100vh"
-      backgroundColor="gray.200"
-      justifyContent="center"
-      alignItems="center">
-      <Stack
-        flexDir="column"
-        mb="2"
-        justifyContent="center"
-        alignItems="center"
-        backgroundColor='gray.100'
-        padding='50'
-        borderRadius={'10'}> 
-        <Heading color="teal.400">Dead Simple Chat Application</Heading>
-          <FormControl pt={10} >
-            <InputGroup >
-              <Input placeholder="enter username" value={username} onChange={(e) => setUsername(e.target.value)}/>
-              <InputRightElement width='7rem'>
-                <Button size='sm' color={'gray.500'} background={'gray.200'}
-                onClick={() => {
-                  lobby.addUserToLobby(username);
-                }}>
-                Enter Lobby
-              </Button>
-              </InputRightElement>
-            </InputGroup>
-          </FormControl>
-        </Stack>
-    </Flex>
+      <Welcome username={username} setUsername={setUsername} />
     );
   } else if (!selectedRoom) {
     return (
