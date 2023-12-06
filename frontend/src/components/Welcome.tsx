@@ -28,7 +28,7 @@ export default function Welcome({username, setUsername}: WelcomeProps): JSX.Elem
           <Heading color="teal.400">Dead Simple Chat Application</Heading>
             <FormControl pt={10} >
               <InputGroup >
-                <Input placeholder="enter username" value={username} onChange={(e) => setUsername(e.target.value)}/>
+                <Input placeholder="Username" value={username} onChange={(e) => setUsername(e.target.value)}/>
                 <InputRightElement width='7rem'>
                   <Button size='sm' color={'gray.540'} background={'gray.200'}
                   onClick={() => {

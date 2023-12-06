@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import useLobby from "../hooks/useLobby";
-import { Button, Heading, Textarea, Grid, GridItem, HStack, Flex, Spacer, useToast, Input, InputGroup, InputRightElement, Stack, FormControl, InputLeftElement, SimpleGrid } from "@chakra-ui/react";
+import { Button, Heading, Textarea, Grid, GridItem, HStack, Flex, Spacer, useToast, Input, InputGroup, InputRightElement, Stack, FormControl, InputLeftElement, SimpleGrid, VStack, Box, Center, AbsoluteCenter, Divider, StackDivider } from "@chakra-ui/react";
 import Room from "../classes/Room";
 import RoomComponent from "./RoomComponent";
 import Welcome from "./Welcome";
@@ -71,24 +71,28 @@ export default function Lobby(): JSX.Element {
     );
   } else if (!selectedRoom) {
     return (
-      <div>
+      <div >
+
         <div>
-          <Flex>
+          <HStack position='relative' spacing='24px'>
+            <AbsoluteCenter>
+              <Heading as='h1' size='lg'>Chat Room Lobby</Heading>
+            </AbsoluteCenter>
             <Spacer />
-            <h1>Chat Room Lobby</h1>
-            <Spacer />
-            <h3>userID: {ourPlayerID}</h3>
-          </Flex>
+            <VStack float='right' background='gray.200' borderRadius={10} p={5}>
+              <Heading as='h3' size='sm' pr={10} >Username: {ourPlayerID}</Heading>
+              <Divider />
+              <Heading as='h3' size='sm'>Other players in the lobby currently are: </Heading>
+              {otherPlayers.map((pID) => (
+                <Box>{pID}</Box>
+              ))}
+            </VStack>
+          </HStack>
         </div>
 
+
         <div> 
-          <h3>Other players in the lobby currently are: </h3>
-          <ul>
-            {otherPlayers.map((pID) => (
-              <li>{pID}</li>
-            ))}
-          </ul>
-          <HStack>
+          <HStack spacing='50%'>
             <Button onClick={() => lobby.createNewRoom("")}>Create New Public Room</Button>
             <Button onClick={() => lobby.createNewRoom(roomPass)}>Create New Private Room</Button>
           </HStack>
