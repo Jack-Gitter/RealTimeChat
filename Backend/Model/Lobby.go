@@ -20,6 +20,7 @@ func (l *Lobby) JoinLobby(playerID string, conn *websocket.Conn) {
 	for {
 		var msg map[string]interface{}
 		err := conn.ReadJSON(&msg)
+		loginError := false
 
 		if err != nil {
 			fmt.Println(err)
@@ -47,8 +48,29 @@ func (l *Lobby) JoinLobby(playerID string, conn *websocket.Conn) {
 		cmdType := msg["cmdType"]
 
 		if cmdType == "connect" {
+			// check to see if there is a user with this username in any room, or in the lobby. If there is, than sent a json message of a failure back to the user
+
 			uMsg := msg["username"].(string)
 			username = string(uMsg)
+
+			if _, ok := l.PlayersInLobby[username]; ok {
+				fmt.Println("here")
+				conn.WriteJSON(LoginError{CmdType: "loginError"})
+				continue
+			}
+
+			for _, r := range l.Rooms {
+				if _, ok := r.PlayerConnections[username]; ok {
+					conn.WriteJSON(LoginError{CmdType: "lgoinError"})
+					loginError = true
+					break
+				}
+			}
+
+			if loginError {
+				continue
+			}
+
 			l.PlayersInLobby[username] = conn
 
 			conn.WriteJSON(ConnectCommand{CmdType: "connectionResponse", Lobby: *l, OurPlayerID: username})
@@ -57,7 +79,6 @@ func (l *Lobby) JoinLobby(playerID string, conn *websocket.Conn) {
 					fmt.Println(l.Rooms)
 					c.WriteJSON(LobbyUpdate{CmdType: "LobbyUpdate", Lobby: *l})
 				}
-
 			}
 		}
 

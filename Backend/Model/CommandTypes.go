@@ -32,6 +32,10 @@ type MessageReceived struct {
 	Messages [][]string
 }
 
+type LoginError struct {
+	CmdType string
+}
+
 type Command interface {
 	NewRoomCommand | ConnectCommand | LobbyUpdate | RoomUpdate | RoomDelete | MessageReceived
 }

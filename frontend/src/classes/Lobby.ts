@@ -111,6 +111,9 @@ export default class Lobby extends EventEmitter {
         if (cmdType === "RoomUpdate") {
           this.handleRoomUpdate(jsonMessage);
         }
+        if (cmdType === "loginError") {
+          this.emit("loginError")
+        }
       } catch (err) {
         if (err instanceof Error) {
           console.log(err);

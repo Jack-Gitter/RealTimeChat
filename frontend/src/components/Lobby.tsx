@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
 import useLobby from "../hooks/useLobby";
-import { Button, Heading, Textarea, Grid, GridItem, HStack, Flex, Spacer } from "@chakra-ui/react";
+import { Button, Heading, Textarea, Grid, GridItem, HStack, Flex, Spacer, useToast } from "@chakra-ui/react";
 import Room from "../classes/Room";
 import RoomComponent from "./RoomComponent";
 
 export default function Lobby(): JSX.Element {
+  let toast = useToast()
   let LobbyComponent = useLobby();
   let lobby = LobbyComponent.lobby;
   let setLobby = LobbyComponent.setLobby;
@@ -35,6 +36,16 @@ export default function Lobby(): JSX.Element {
       setLobby(l)
       setRooms([...l.rooms]);
       setSelectedRoomIfOurUserIsInRoom(l)
+    })
+    lobby.addListener("loginError", () => {
+      console.log("here")
+      toast({
+        title: 'username with user already exists in the lobby',
+        description: "fuck you",
+        status: 'error',
+        duration: 9000,
+        isClosable: true,
+      })
     })
   });
 
