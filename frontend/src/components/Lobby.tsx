@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import useLobby from "../hooks/useLobby";
-import { Button, Heading, Textarea, Grid, GridItem, HStack, Flex, Spacer, useToast, Input } from "@chakra-ui/react";
+import { Button, Heading, Textarea, Grid, GridItem, HStack, Flex, Spacer, useToast, Input, InputGroup, InputRightElement, Stack, FormControl, InputLeftElement } from "@chakra-ui/react";
 import Room from "../classes/Room";
 import RoomComponent from "./RoomComponent";
 
@@ -47,7 +47,6 @@ export default function Lobby(): JSX.Element {
         isClosable: true,
       })
     })
-
   });
 
   function setSelectedRoomIfOurUserIsInRoom(l: any) {
@@ -67,22 +66,52 @@ export default function Lobby(): JSX.Element {
 
   if (lobby.ourPlayerID === "") {
     return (
-      <div>
+      /*<div>
         <Heading as='h1' size='xl'>Dead Simple Chat Application</Heading>
-        <Textarea
-        value={username}
-        onChange={(e) => setUsername(e.target.value)}
-        placeholder='Here is a sample placeholder'
-        size='sm'
-      />
-        <Button
-          onClick={() => {
-            lobby.addUserToLobby(username);
-          }}
-        >
-          Enter the chat lobby
-        </Button>
-      </div>
+        <InputGroup width='50%'>
+          <Input placeholder="enter username" value={username} onChange={(e) => setUsername(e.target.value)}/>
+          <InputRightElement width='7rem'>
+            <Button size='sm'
+            onClick={() => {
+              lobby.addUserToLobby(username);
+            }}>
+            Enter Lobby
+          </Button>
+          </InputRightElement>
+        </InputGroup>
+        
+      </div>*/
+      <Flex
+      flexDirection="column"
+      width="100wh"
+      height="100vh"
+      backgroundColor="gray.200"
+      justifyContent="center"
+      alignItems="center">
+      <Stack
+        flexDir="column"
+        mb="2"
+        justifyContent="center"
+        alignItems="center"
+        backgroundColor='gray.100'
+        padding='50'
+        borderRadius={'10'}> 
+        <Heading color="teal.400">Dead Simple Chat Application</Heading>
+          <FormControl pt={10} >
+            <InputGroup >
+              <Input placeholder="enter username" value={username} onChange={(e) => setUsername(e.target.value)}/>
+              <InputRightElement width='7rem'>
+                <Button size='sm' color={'gray.500'} background={'gray.200'}
+                onClick={() => {
+                  lobby.addUserToLobby(username);
+                }}>
+                Enter Lobby
+              </Button>
+              </InputRightElement>
+            </InputGroup>
+          </FormControl>
+        </Stack>
+    </Flex>
     );
   } else if (!selectedRoom) {
     return (
