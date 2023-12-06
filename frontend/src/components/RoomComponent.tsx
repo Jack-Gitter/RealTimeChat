@@ -1,4 +1,4 @@
-import { Button, Card, CardBody, CardFooter, CardHeader, Divider, HStack, Heading, Input, VStack, useToast } from "@chakra-ui/react"
+import { AbsoluteCenter, Button, Card, CardBody, CardFooter, CardHeader, Center, Divider, HStack, Heading, Input, VStack, useToast } from "@chakra-ui/react"
 import Room from "../classes/Room"
 import useLobby from "../hooks/useLobby"
 import { useEffect, useState } from "react";
@@ -40,16 +40,19 @@ export default function RoomComponent({r}: RoomComponentProps): JSX.Element {
         </CardBody>
         
         <Divider />
-            <CardFooter>
+            <CardFooter position={'relative'}>
+                <VStack>
                 <HStack>
-                    <Button onClick={() => {
+                    <Button w='50%' onClick={() => {
                         lobby.joinRoom(r.id, pass)
                     }}>Join Room</Button>
-                    <Input value={pass} onChange={(e) => setPass(e.target.value)}></Input>
-                    {r.owner === lobby.ourPlayerID ? <Button onClick={() => {
+                    {r.owner === lobby.ourPlayerID ? <Button w='50%' onClick={() => {
                         lobby.deleteRoom(r.id)
                     }}>Delete Room</Button>: <></> } 
                 </HStack>
+                {r.password === '' ? <></> : <Input placeholder="password" value={pass} onChange={(e) => setPass(e.target.value)}></Input> }
+                
+                </VStack>
             </CardFooter>
             
             

@@ -119,11 +119,9 @@ export default function Lobby(): JSX.Element {
           
 
         </div>
-        <h3>Available rooms are</h3>
-          
         <SimpleGrid columns={{base: 1, md: 2, lg: 3}}>
         {rooms.map((r, index) => (
-            <GridItem w='100%' h='100%' bg='blue.500' key={index}>
+            <GridItem m='5' w='90%' h='100%' key={index}>
               <RoomComponent r={r} /> 
             </GridItem>
           ))}
