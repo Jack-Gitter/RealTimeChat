@@ -1,4 +1,4 @@
-import { AbsoluteCenter, Button, Card, CardBody, CardFooter, CardHeader, Center, Divider, HStack, Heading, Input, VStack, useToast } from "@chakra-ui/react"
+import { AbsoluteCenter, Text, Box, Button, Card, CardBody, CardFooter, CardHeader, Center, Divider, HStack, Heading, Input, VStack, useToast } from "@chakra-ui/react"
 import Room from "../classes/Room"
 import useLobby from "../hooks/useLobby"
 import { useEffect, useState } from "react";
@@ -32,9 +32,9 @@ export default function RoomComponent({r}: RoomComponentProps): JSX.Element {
         </CardHeader>
 
         <CardBody borderRadius='lg'>
-            Users In Room: 
-            <VStack>
-           {r.playersInRoom.map(pid => <>{pid}</>)}
+        <VStack>
+            <Box><Text as='b'>Users In Room: </Text></Box>
+           {r.playersInRoom.map(pid => <Box>{pid}</Box>)}
             </VStack>
         </CardBody>
         <Divider />
