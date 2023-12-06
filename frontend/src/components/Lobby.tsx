@@ -148,7 +148,7 @@ export default function Lobby(): JSX.Element {
         setTextToSend("")
       }}>Send Message!
       </Button>
-      {selectedRoom.messages.map((playerToMessage: string[]) => {
+      {selectedRoom.messages.slice(selectedRoom.messages.length-10, selectedRoom.messages.length).reverse().map((playerToMessage: string[]) => {
         return <Box>{playerToMessage[0]}: {playerToMessage[1]}</Box>
       })}
       
