@@ -1,7 +1,7 @@
-import { Button, Card, CardBody, CardFooter, CardHeader, Divider, HStack, Heading, VStack } from "@chakra-ui/react"
+import { Button, Card, CardBody, CardFooter, CardHeader, Divider, HStack, Heading, Input, VStack } from "@chakra-ui/react"
 import Room from "../classes/Room"
 import useLobby from "../hooks/useLobby"
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 interface RoomComponentProps {
     r: Room
@@ -9,6 +9,8 @@ interface RoomComponentProps {
 export default function RoomComponent({r}: RoomComponentProps): JSX.Element {
     let LobbyComponent = useLobby();
     let lobby = LobbyComponent.lobby;
+    let [pass, setPass] = useState("")
+    
     useEffect(() => {
         console.log("ourplayer is " + lobby.ourPlayerID)
     })
@@ -31,8 +33,9 @@ export default function RoomComponent({r}: RoomComponentProps): JSX.Element {
             <CardFooter>
                 <HStack>
                     <Button onClick={() => {
-                        lobby.joinRoom(r.id)
+                        lobby.joinRoom(r.id, pass)
                     }}>Join Room</Button>
+                    <Input value={pass} onChange={(e) => setPass(e.target.value)}></Input>
                     {r.owner === lobby.ourPlayerID ? <Button onClick={() => {
                         lobby.deleteRoom(r.id)
                     }}>Delete Room</Button>: <></> } 

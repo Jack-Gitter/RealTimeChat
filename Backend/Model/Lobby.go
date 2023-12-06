@@ -48,13 +48,11 @@ func (l *Lobby) JoinLobby(playerID string, conn *websocket.Conn) {
 		cmdType := msg["cmdType"]
 
 		if cmdType == "connect" {
-			// check to see if there is a user with this username in any room, or in the lobby. If there is, than sent a json message of a failure back to the user
 
 			uMsg := msg["username"].(string)
 			username = string(uMsg)
 
 			if _, ok := l.PlayersInLobby[username]; ok {
-				fmt.Println("here")
 				conn.WriteJSON(LoginError{CmdType: "loginError"})
 				continue
 			}
@@ -84,11 +82,13 @@ func (l *Lobby) JoinLobby(playerID string, conn *websocket.Conn) {
 
 		if cmdType == "joinRoom" {
 			roomID := msg["roomID"]
-			l.joinRoom(username, int(roomID.(float64)), conn)
-			l.sendJoinedRoomMessage(int(roomID.(float64)))
+			var pass string = msg["password"].(string)
+			l.joinRoom(username, int(roomID.(float64)), conn, pass)
+
 		}
 		if cmdType == "createRoom" {
-			l.createNewRoom(username, l.NextRoomID, conn)
+			var password string = msg["password"].(string)
+			l.createNewRoom(username, l.NextRoomID, conn, password)
 			l.sendNewRoomMessage(l.NextRoomID)
 			l.NextRoomID += 1
 		}
@@ -125,15 +125,21 @@ func (l *Lobby) sendMessage(playerID string, message string, roomID int) {
 	room.Messages = append(room.Messages, []string{playerID, message})
 }
 
-func (l *Lobby) createNewRoom(playerID string, roomID int, conn *websocket.Conn) error {
-	l.Rooms = append(l.Rooms, Room{Id: roomID, PlayerConnections: make(map[string]*websocket.Conn), Messages: [][]string{}, Owner: playerID})
+func (l *Lobby) createNewRoom(playerID string, roomID int, conn *websocket.Conn, password string) error {
+	l.Rooms = append(l.Rooms, Room{Id: roomID, PlayerConnections: make(map[string]*websocket.Conn), Messages: [][]string{}, Owner: playerID, Password: password})
 	return nil
 }
 
-func (l *Lobby) joinRoom(playerID string, roomID int, conn *websocket.Conn) {
+func (l *Lobby) joinRoom(playerID string, roomID int, conn *websocket.Conn, pass string) {
 	idx := l.findRoomIndex(roomID)
-	l.Rooms[idx].PlayerConnections[playerID] = conn
-	delete(l.PlayersInLobby, playerID)
+	room := l.Rooms[idx]
+	if room.Password == pass {
+		l.Rooms[idx].PlayerConnections[playerID] = conn
+		delete(l.PlayersInLobby, playerID)
+		l.sendJoinedRoomMessage(roomID)
+	} else {
+		// send a failed to join room message or something
+	}
 }
 
 func (l *Lobby) deleteRoom(roomID int) {

@@ -88,8 +88,7 @@ export default class Lobby extends EventEmitter {
   public handleNewRoomResponse(jsonMessage: any) {
     
     let jsonRoom = jsonMessage.Room;
-    
-    let newRoom = new Room(jsonRoom.Id, [], [], jsonRoom.Owner);
+    let newRoom = new Room(jsonRoom.Id, [], [], jsonRoom.Owner, jsonRoom.Password);
     this.rooms.push(newRoom);
     this.emit("NewRoom", this);
   }
@@ -129,12 +128,12 @@ export default class Lobby extends EventEmitter {
     this.ourPlayerSocket?.send(JSON.stringify({cmdType: "sendMessage", roomID: roomID, message: message}))
   }
 
-  public createNewRoom() {
-    this.ourPlayerSocket?.send(JSON.stringify({ cmdType: "createRoom" }));
+  public createNewRoom(p: string) {
+    this.ourPlayerSocket?.send(JSON.stringify({ cmdType: "createRoom", password: p }));
   }
 
-  public joinRoom(roomID: number) {
-    this.ourPlayerSocket?.send(JSON.stringify({cmdType: "joinRoom", roomID: roomID}))
+  public joinRoom(roomID: number, pass: string) {
+    this.ourPlayerSocket?.send(JSON.stringify({cmdType: "joinRoom", roomID: roomID, password: pass}))
   }
 
   public leaveRoom(roomID: number) {

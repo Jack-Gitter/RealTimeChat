@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import useLobby from "../hooks/useLobby";
-import { Button, Heading, Textarea, Grid, GridItem, HStack, Flex, Spacer, useToast } from "@chakra-ui/react";
+import { Button, Heading, Textarea, Grid, GridItem, HStack, Flex, Spacer, useToast, Input } from "@chakra-ui/react";
 import Room from "../classes/Room";
 import RoomComponent from "./RoomComponent";
 
@@ -15,6 +15,7 @@ export default function Lobby(): JSX.Element {
   let [selectedRoom, setSelectedRoom] = useState<Room | undefined>(undefined)
   let [textToSend, setTextToSend] = useState("")
   let [username, setUsername] = useState("")
+  let [roomPass, setRoomPass] = useState("")
   
   useEffect(() => {
     lobby.addListener("LobbyUpdate", (l) => {
@@ -101,7 +102,11 @@ export default function Lobby(): JSX.Element {
               <li>{pID}</li>
             ))}
           </ul>
-          <Button onClick={() => lobby.createNewRoom()}>CreateNewRoom</Button>
+          <HStack>
+            <Button onClick={() => lobby.createNewRoom("")}>Create New Public Room</Button>
+            <Button onClick={() => lobby.createNewRoom(roomPass)}>Create New Private Room</Button>
+          </HStack>
+          <Input value={roomPass} onChange={(e) => setRoomPass(e.target.value)}></Input>
 
         </div>
         <h3>Available rooms are</h3>
