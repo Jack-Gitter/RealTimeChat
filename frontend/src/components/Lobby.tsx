@@ -73,15 +73,14 @@ export default function Lobby(): JSX.Element {
     );
   } else if (!selectedRoom) {
     return (
-      <div >
-
+      <div>
         <div>
-          <Flex position='sticky' left='5' boxShadow="0 4px 12px 0 rgba(0,0,0, 0.05)">
+          <Flex position='sticky' left='5'>
             <AbsoluteCenter>
               <Heading as='h1' size='lg'>Chat Room Lobby</Heading>
             </AbsoluteCenter>
             <Spacer />
-            <VStack float='right' background='gray.200' borderRadius={10} p={5}>
+            <VStack float='right' borderRadius={10} p={5}>
               <Heading as='h3' size='sm' pr={10} >Username: {ourPlayerID}</Heading>
               <Heading as='h3' size='sm'>Other players in the lobby currently are: </Heading>
               {otherPlayers.map((pID) => (

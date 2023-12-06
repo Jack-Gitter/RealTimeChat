@@ -43,7 +43,7 @@ export default function RoomComponent({r}: RoomComponentProps): JSX.Element {
             <CardFooter position={'relative'}>
                 <VStack>
                 <HStack>
-                    <Button w='50%' onClick={() => {
+                    <Button w={r.owner === lobby.ourPlayerID ? '50%' : '100%'}  onClick={() => {
                         lobby.joinRoom(r.id, pass)
                     }}>Join Room</Button>
                     {r.owner === lobby.ourPlayerID ? <Button w='50%' onClick={() => {
