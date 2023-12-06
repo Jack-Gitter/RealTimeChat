@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import useLobby from "../hooks/useLobby";
-import { Button, Heading, Textarea, Grid, GridItem, HStack, Flex, Spacer, useToast, Input, InputGroup, InputRightElement, Stack, FormControl, InputLeftElement } from "@chakra-ui/react";
+import { Button, Heading, Textarea, Grid, GridItem, HStack, Flex, Spacer, useToast, Input, InputGroup, InputRightElement, Stack, FormControl, InputLeftElement, SimpleGrid } from "@chakra-ui/react";
 import Room from "../classes/Room";
 import RoomComponent from "./RoomComponent";
 import Welcome from "./Welcome";
@@ -96,14 +96,15 @@ export default function Lobby(): JSX.Element {
 
         </div>
         <h3>Available rooms are</h3>
-
-        <Grid templateColumns='repeat(5, 5000fr)' gap={40}>
-          {rooms.map((r, index) => (
+          
+        <SimpleGrid columns={{base: 1, md: 2, lg: 3}}>
+        {rooms.map((r, index) => (
             <GridItem w='100%' h='100%' bg='blue.500' key={index}>
               <RoomComponent r={r} /> 
             </GridItem>
           ))}
-        </Grid>
+        </SimpleGrid>
+
 
       </div>
     );
