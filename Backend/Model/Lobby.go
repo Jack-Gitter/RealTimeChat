@@ -192,6 +192,7 @@ func (l *Lobby) sendLeaveRoomMessage(roomID int) {
 	room := l.Rooms[idx]
 	broadcastMessageToRoom[RoomUpdate](RoomUpdate{CmdType: "RoomUpdate", Room: room}, room)
 	broadcastMessageToLobby[LobbyUpdate](LobbyUpdate{CmdType: "LobbyUpdate", Lobby: *l}, l.PlayersInLobby)
+	fmt.Printf("lobby rooms after leave room is %v", l.Rooms)
 }
 
 func broadcastMessageToLobby[T Command](cmd T, conns map[string]*websocket.Conn) {

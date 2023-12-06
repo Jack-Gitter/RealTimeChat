@@ -33,7 +33,7 @@ export default class Lobby extends EventEmitter {
         for (const playerID in room.PlayerConnections) {
           playersInRoom.push(playerID)
         }
-        let newRoom = new Room(room.Id, playersInRoom, room.Messages, room.Owner);
+        let newRoom = new Room(room.Id, playersInRoom, room.Messages, room.Owner, room.Password);
         this.rooms.push(newRoom);
       }
     }
@@ -62,7 +62,7 @@ export default class Lobby extends EventEmitter {
         for (const playerID in room.PlayerConnections) {
           playersInRoom.push(playerID)
         }
-        let newRoom = new Room(room.Id, playersInRoom, room.Messages, room.Owner);
+        let newRoom = new Room(room.Id, playersInRoom, room.Messages, room.Owner, room.Password);
         this.rooms.push(newRoom);
       }
     }
