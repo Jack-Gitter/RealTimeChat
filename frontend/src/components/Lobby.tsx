@@ -38,12 +38,11 @@ export default function Lobby(): JSX.Element {
       setSelectedRoomIfOurUserIsInRoom(l)
     })
     lobby.addListener("loginError", () => {
-      console.log("here")
       toast({
         title: 'username with user already exists in the lobby',
-        description: "fuck you",
+        description: 'fuck you',
         status: 'error',
-        duration: 9000,
+        duration: 2000,
         isClosable: true,
       })
     })
