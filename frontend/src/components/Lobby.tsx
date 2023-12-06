@@ -4,6 +4,7 @@ import { Button, Heading, Textarea, Grid, GridItem, HStack, Flex, Spacer, useToa
 import Room from "../classes/Room";
 import RoomComponent from "./RoomComponent";
 import Welcome from "./Welcome";
+import Sidebar from "./Sidebar";
 
 export default function Lobby(): JSX.Element {
   let toast = useToast()
@@ -74,26 +75,21 @@ export default function Lobby(): JSX.Element {
   } else if (!selectedRoom) {
     return (
       <div>
+        <Sidebar otherPlayers={otherPlayers} ourPlayerID={ourPlayerID}/>
         <div>
           <Flex position='sticky' left='5'>
             <AbsoluteCenter>
               <Heading as='h1' size='lg'>Chat Room Lobby</Heading>
             </AbsoluteCenter>
             <Spacer />
-            <VStack float='right' borderRadius={10} p={5}>
-              <Heading as='h3' size='sm' pr={10} >Username: {ourPlayerID}</Heading>
-              <Heading as='h3' size='sm'>Other players in the lobby currently are: </Heading>
-              {otherPlayers.map((pID) => (
-                <Box>{pID}</Box>
-              ))}
-            </VStack>
+            
           </Flex>
         </div>
 
 
         <div> 
           <VStack spacing='50%'>
-            <Button mt='5' onClick={() => lobby.createNewRoom("")}>Create New Public Room</Button>
+            <Button mt='10' onClick={() => lobby.createNewRoom("")}>Create New Public Room</Button>
             <Button mt='5' onClick={onOpen}>Create New Private Room</Button>
             <Modal isOpen={isOpen} onClose={onClose}>
               <ModalOverlay />

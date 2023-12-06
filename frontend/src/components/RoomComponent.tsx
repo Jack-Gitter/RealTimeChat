@@ -36,9 +36,7 @@ export default function RoomComponent({r}: RoomComponentProps): JSX.Element {
             <VStack>
            {r.playersInRoom.map(pid => <>{pid}</>)}
             </VStack>
-
         </CardBody>
-        
         <Divider />
             <CardFooter position={'relative'}>
                 <VStack>
@@ -51,11 +49,8 @@ export default function RoomComponent({r}: RoomComponentProps): JSX.Element {
                     }}>Delete Room</Button>: <></> } 
                 </HStack>
                 {r.password === '' ? <></> : <Input placeholder="password" value={pass} onChange={(e) => setPass(e.target.value)}></Input> }
-                
                 </VStack>
             </CardFooter>
-            
-            
         </Card>
     </>)
 }
