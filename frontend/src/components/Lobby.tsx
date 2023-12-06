@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import useLobby from "../hooks/useLobby";
-import { Button, Heading, Textarea, Grid, GridItem, HStack, Flex, Spacer, useToast, Input, InputGroup, InputRightElement, Stack, FormControl, InputLeftElement, SimpleGrid, VStack, Box, Center, AbsoluteCenter, Divider, StackDivider } from "@chakra-ui/react";
+import { Button, Heading, Textarea, Grid, GridItem, HStack, Flex, Spacer, useToast, Input, InputGroup, InputRightElement, Stack, FormControl, InputLeftElement, SimpleGrid, VStack, Box, Center, AbsoluteCenter, Divider, StackDivider, useDisclosure, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody } from "@chakra-ui/react";
 import Room from "../classes/Room";
 import RoomComponent from "./RoomComponent";
 import Welcome from "./Welcome";
@@ -17,6 +17,8 @@ export default function Lobby(): JSX.Element {
   let [textToSend, setTextToSend] = useState("")
   let [username, setUsername] = useState("")
   let [roomPass, setRoomPass] = useState("")
+  
+  const {isOpen, onClose, onOpen} = useDisclosure()
   
   useEffect(() => {
     lobby.addListener("LobbyUpdate", (l) => {
@@ -74,29 +76,47 @@ export default function Lobby(): JSX.Element {
       <div >
 
         <div>
-          <HStack position='relative' spacing='24px'>
+          <Flex position='sticky' left='5' boxShadow="0 4px 12px 0 rgba(0,0,0, 0.05)">
             <AbsoluteCenter>
               <Heading as='h1' size='lg'>Chat Room Lobby</Heading>
             </AbsoluteCenter>
             <Spacer />
             <VStack float='right' background='gray.200' borderRadius={10} p={5}>
               <Heading as='h3' size='sm' pr={10} >Username: {ourPlayerID}</Heading>
-              <Divider />
               <Heading as='h3' size='sm'>Other players in the lobby currently are: </Heading>
               {otherPlayers.map((pID) => (
                 <Box>{pID}</Box>
               ))}
             </VStack>
-          </HStack>
+          </Flex>
         </div>
 
 
         <div> 
-          <HStack spacing='50%'>
-            <Button onClick={() => lobby.createNewRoom("")}>Create New Public Room</Button>
-            <Button onClick={() => lobby.createNewRoom(roomPass)}>Create New Private Room</Button>
-          </HStack>
-          <Input value={roomPass} onChange={(e) => setRoomPass(e.target.value)}></Input>
+          <VStack spacing='50%'>
+            <Button mt='5' onClick={() => lobby.createNewRoom("")}>Create New Public Room</Button>
+            <Button mt='5' onClick={onOpen}>Create New Private Room</Button>
+            <Modal isOpen={isOpen} onClose={onClose}>
+              <ModalOverlay />
+                <ModalContent>
+                  <ModalHeader>Enter Password For Private Room</ModalHeader>
+                  <ModalCloseButton />
+                  <ModalBody>
+                    <InputGroup pb='6'>
+                      <Input value={roomPass} onChange={(e) => setRoomPass(e.target.value)} placeholder="Password" />
+                      <InputRightElement w='7.5rem'>
+                        <Button size='sm' onClick={() => {
+                          lobby.createNewRoom(roomPass)
+                          setRoomPass("")
+                          onClose()
+                        } }>Create Room</Button>
+                      </InputRightElement>
+                    </InputGroup>
+                  </ModalBody>
+                </ModalContent>
+            </Modal>
+          </VStack>
+          
 
         </div>
         <h3>Available rooms are</h3>
