@@ -5,6 +5,7 @@ import Room from "../classes/Room";
 import RoomComponent from "./RoomComponent";
 import Welcome from "./Welcome";
 import Sidebar from "./Sidebar";
+import RoomSidebar from "./RoomSidebar";
 
 export default function Lobby(): JSX.Element {
   let toast = useToast()
@@ -127,29 +128,35 @@ export default function Lobby(): JSX.Element {
     );
   } else if (selectedRoom) {
     return (
+      <Box m='2'>
+        <RoomSidebar ourPlayerID={ourPlayerID} id={selectedRoom.id} otherPlayers={selectedRoom.playersInRoom}/>
       <ul>
-      <li>roomID: {selectedRoom.id}</li>
-      {selectedRoom.playersInRoom.map(p => <li>{p}</li>)}
-      <li><Button onClick={() => {
-          lobby.leaveRoom(selectedRoom?.id as number)
-      }}>Leave room</Button></li>
-
-      <Textarea
+      
+      <Input
+        mt='10'
         value={textToSend}
         onChange={(e) => setTextToSend(e.target.value)}
-        placeholder='Here is a sample placeholder'
+        placeholder='Send a Message!'
         size='sm'
       />
     
-      {selectedRoom.messages.map((playerToMessage: string[]) => {
-        return <li>{playerToMessage[0]}, {playerToMessage[1]}</li>
-      })}
-
-      <Button onClick={() => {
+      <VStack>
+      <Button 
+      mt='5'
+      onClick={() => {
         lobby.sendMessage(textToSend, selectedRoom?.id as number)
-      }}>sendmessage
+        setTextToSend("")
+      }}>Send Message!
       </Button>
+      {selectedRoom.messages.map((playerToMessage: string[]) => {
+        return <Box>{playerToMessage[0]}: {playerToMessage[1]}</Box>
+      })}
+      
+      </VStack>
+
+      
       </ul>
+      </Box>
     )
   } else {
     return (
