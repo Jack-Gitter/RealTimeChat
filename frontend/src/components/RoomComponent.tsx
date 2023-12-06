@@ -1,6 +1,7 @@
 import { Button, Card, CardBody, CardFooter, CardHeader, Divider, HStack, Heading, VStack } from "@chakra-ui/react"
 import Room from "../classes/Room"
 import useLobby from "../hooks/useLobby"
+import { useEffect } from "react";
 
 interface RoomComponentProps {
     r: Room
@@ -8,6 +9,9 @@ interface RoomComponentProps {
 export default function RoomComponent({r}: RoomComponentProps): JSX.Element {
     let LobbyComponent = useLobby();
     let lobby = LobbyComponent.lobby;
+    useEffect(() => {
+        console.log("ourplayer is " + lobby.ourPlayerID)
+    })
     return (<>
        <Card background={'#d4d6d9'}>
 
@@ -29,9 +33,9 @@ export default function RoomComponent({r}: RoomComponentProps): JSX.Element {
                     <Button onClick={() => {
                         lobby.joinRoom(r.id)
                     }}>Join Room</Button>
-                    <Button onClick={() => {
+                    {r.owner === lobby.ourPlayerID ? <Button onClick={() => {
                         lobby.deleteRoom(r.id)
-                    }}>Delete Room</Button>
+                    }}>Delete Room</Button>: <></> } 
                 </HStack>
             </CardFooter>
             

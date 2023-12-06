@@ -17,7 +17,6 @@ export default class Lobby extends EventEmitter {
 
   private handleConnectionResponse(jsonMessage: any) {
     this.ourPlayerID = jsonMessage.OurPlayerID;
-
     for (const playerID in jsonMessage.Lobby.PlayersInLobby) {
       if (
         playerID !== this.ourPlayerID &&
@@ -34,7 +33,7 @@ export default class Lobby extends EventEmitter {
         for (const playerID in room.PlayerConnections) {
           playersInRoom.push(playerID)
         }
-        let newRoom = new Room(room.Id, playersInRoom);
+        let newRoom = new Room(room.Id, playersInRoom, room.Messages, room.Owner);
         this.rooms.push(newRoom);
       }
     }
@@ -43,6 +42,7 @@ export default class Lobby extends EventEmitter {
   }
 
   private handleLobbyUpdate(jsonMessage: any) {
+    console.log("in handle lobby update, our player is: " + this.ourPlayerID)
     if (jsonMessage.Lobby.PlayersInLobby != null) {
       this.otherPlayers = []
     } 
@@ -62,7 +62,7 @@ export default class Lobby extends EventEmitter {
         for (const playerID in room.PlayerConnections) {
           playersInRoom.push(playerID)
         }
-        let newRoom = new Room(room.Id, playersInRoom);
+        let newRoom = new Room(room.Id, playersInRoom, room.Messages, room.Owner);
         this.rooms.push(newRoom);
       }
     }
@@ -88,13 +88,13 @@ export default class Lobby extends EventEmitter {
   public handleNewRoomResponse(jsonMessage: any) {
     
     let jsonRoom = jsonMessage.Room;
-    let newRoom = new Room(jsonRoom.Id);
+    
+    let newRoom = new Room(jsonRoom.Id, [], [], jsonRoom.Owner);
     this.rooms.push(newRoom);
     this.emit("NewRoom", this);
   }
   public addUserToLobby(username: string) {
     this.ourPlayerSocket = new WebSocket("ws://localhost:8080/lobby");
-    this.ourPlayerID = username
     this.ourPlayerSocket.onmessage = (event) => {
       try {
         let jsonMessage = JSON.parse(event.data);

@@ -47,9 +47,6 @@ func (l *Lobby) JoinLobby(playerID string, conn *websocket.Conn) {
 		cmdType := msg["cmdType"]
 
 		if cmdType == "connect" {
-			// read again from the socket for the username!!!
-			// then substitute playerID in for the Connectcommand
-
 			uMsg := msg["username"].(string)
 			username = string(uMsg)
 			l.PlayersInLobby[username] = conn
@@ -57,6 +54,7 @@ func (l *Lobby) JoinLobby(playerID string, conn *websocket.Conn) {
 			conn.WriteJSON(ConnectCommand{CmdType: "connectionResponse", Lobby: *l, OurPlayerID: username})
 			for pid, c := range l.PlayersInLobby {
 				if pid != username {
+					fmt.Println(l.Rooms)
 					c.WriteJSON(LobbyUpdate{CmdType: "LobbyUpdate", Lobby: *l})
 				}
 
@@ -65,27 +63,22 @@ func (l *Lobby) JoinLobby(playerID string, conn *websocket.Conn) {
 
 		if cmdType == "joinRoom" {
 			roomID := msg["roomID"]
-			fmt.Println(username)
 			l.joinRoom(username, int(roomID.(float64)), conn)
 			l.sendJoinedRoomMessage(int(roomID.(float64)))
 		}
 		if cmdType == "createRoom" {
 			l.createNewRoom(username, l.NextRoomID, conn)
 			l.sendNewRoomMessage(l.NextRoomID)
-			fmt.Printf("creating room %v \n", l.NextRoomID)
 			l.NextRoomID += 1
 		}
 		if cmdType == "leaveRoom" {
 			roomID := msg["roomID"]
 			l.leaveRoom(username, int(roomID.(float64)))
-			fmt.Printf("leaving room %v \n", int(roomID.(float64)))
 			l.sendLeaveRoomMessage(int(roomID.(float64)))
 		}
 		if cmdType == "deleteRoom" {
 			roomID := msg["roomID"]
 			l.deleteRoom(int(roomID.(float64)))
-			fmt.Printf("deleting room %v \n", int(roomID.(float64)))
-			// sendDeletedRoomMessage
 		}
 		if cmdType == "sendMessage" {
 			roomID := msg["roomID"]
@@ -112,7 +105,7 @@ func (l *Lobby) sendMessage(playerID string, message string, roomID int) {
 }
 
 func (l *Lobby) createNewRoom(playerID string, roomID int, conn *websocket.Conn) error {
-	l.Rooms = append(l.Rooms, Room{Id: roomID, PlayerConnections: make(map[string]*websocket.Conn), Messages: [][]string{}})
+	l.Rooms = append(l.Rooms, Room{Id: roomID, PlayerConnections: make(map[string]*websocket.Conn), Messages: [][]string{}, Owner: playerID})
 	return nil
 }
 
