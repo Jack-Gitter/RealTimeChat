@@ -8,7 +8,7 @@ import (
 
 	"github.com/gorilla/websocket"
 
-	model "SongBattleRoyale/Model"
+	model "RealTimeChat/Model"
 )
 
 var upgrader = websocket.Upgrader{

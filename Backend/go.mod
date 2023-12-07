@@ -1,4 +1,4 @@
-module SongBattleRoyale
+module RealTimeChat
 
 go 1.21.3
 
