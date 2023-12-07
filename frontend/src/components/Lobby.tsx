@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import useLobby from "../hooks/useLobby";
-import { Button, Heading, Textarea, Grid, GridItem, HStack, Flex, Spacer, useToast, Input, InputGroup, InputRightElement, Stack, FormControl, InputLeftElement, SimpleGrid, VStack, Box, Center, AbsoluteCenter, Divider, StackDivider, useDisclosure, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody } from "@chakra-ui/react";
+import { Button, Heading, Textarea, Text, Grid, GridItem, HStack, Flex, Spacer, useToast, Input, InputGroup, InputRightElement, Stack, FormControl, InputLeftElement, SimpleGrid, VStack, Box, Center, AbsoluteCenter, Divider, StackDivider, useDisclosure, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody } from "@chakra-ui/react";
 import Room from "../classes/Room";
 import RoomComponent from "./RoomComponent";
 import Welcome from "./Welcome";
@@ -19,6 +19,7 @@ export default function Lobby(): JSX.Element {
   let [textToSend, setTextToSend] = useState("")
   let [username, setUsername] = useState("")
   let [roomPass, setRoomPass] = useState("")
+  let colors = useRef(new Map())
   
   const {isOpen, onClose, onOpen} = useDisclosure()
   
@@ -54,6 +55,19 @@ export default function Lobby(): JSX.Element {
     })
   });
 
+
+  function hexToRGB(hex: string, alpha: number) {
+    var r = parseInt(hex.slice(1, 3), 16),
+        g = parseInt(hex.slice(3, 5), 16),
+        b = parseInt(hex.slice(5, 7), 16);
+
+    if (alpha) {
+        return "rgba(" + r + ", " + g + ", " + b + ", " + alpha + ")";
+    } else {
+        return "rgb(" + r + ", " + g + ", " + b + ")";
+    }
+}
+
   function setSelectedRoomIfOurUserIsInRoom(l: any) {
     let foundOurPlayerInARoom = false
     for (const r of l.rooms) {
@@ -80,7 +94,7 @@ export default function Lobby(): JSX.Element {
         <div>
           <Flex position='sticky' left='5'>
             <AbsoluteCenter>
-              <Heading as='h1' size='lg'>Chat Room Lobby</Heading>
+              <Heading as='h1' size='lg' color={'gray.600'}>Chat Room Lobby</Heading>
             </AbsoluteCenter>
             <Spacer />
             
@@ -90,8 +104,8 @@ export default function Lobby(): JSX.Element {
 
         <div> 
           <VStack spacing='50%'>
-            <Button mt='10' onClick={() => lobby.createNewRoom("")}>Create New Public Room</Button>
-            <Button mt='5' onClick={onOpen}>Create New Private Room</Button>
+            <Button mt='10' color='gray.600' onClick={() => lobby.createNewRoom("")}>Create New Public Room</Button>
+            <Button mt='5' color='gray.600' onClick={onOpen}>Create New Private Room</Button>
             <Modal isOpen={isOpen} onClose={onClose}>
               <ModalOverlay />
                 <ModalContent>
@@ -127,9 +141,14 @@ export default function Lobby(): JSX.Element {
       </div>
     );
   } else if (selectedRoom) {
+    for (const player of selectedRoom.playersInRoom) {
+      if (colors.current.get(player) === undefined) {
+        colors.current.set(player, Math.floor(Math.random() * 16777215).toString(16))
+      }
+    }
     return (
       <Box m='2'>
-        <RoomSidebar ourPlayerID={ourPlayerID} id={selectedRoom.id} otherPlayers={selectedRoom.playersInRoom}/>
+        <RoomSidebar colors={colors} ourPlayerID={ourPlayerID} id={selectedRoom.id} otherPlayers={selectedRoom.playersInRoom}/>
       <ul>
       
       <Input
@@ -148,8 +167,10 @@ export default function Lobby(): JSX.Element {
         setTextToSend("")
       }}>Send Message!
       </Button>
-      {selectedRoom.messages.slice(selectedRoom.messages.length-10, selectedRoom.messages.length).reverse().map((playerToMessage: string[]) => {
-        return <Box>{playerToMessage[0]}: {playerToMessage[1]}</Box>
+      {selectedRoom.messages.map((playerToMessage: string[]) => {
+
+        return <Box>
+          <Text backgroundColor={hexToRGB('#'+colors.current.get(playerToMessage[0]), .5)} as='span'>{playerToMessage[0]}</Text> → {playerToMessage[1]}</Box>
       })}
       
       </VStack>

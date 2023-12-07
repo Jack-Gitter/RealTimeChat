@@ -23,9 +23,10 @@ export default function RoomComponent({r}: RoomComponentProps): JSX.Element {
               isClosable: true,
             })
           })
+
     })
     return (<>
-       <Card background={'#d4d6d9'}>
+       <Card background={'#d4d6d9'} color='gray.600'>
 
         <CardHeader>
             <Heading size='md'>Room ID: {r.id}</Heading>
@@ -41,10 +42,10 @@ export default function RoomComponent({r}: RoomComponentProps): JSX.Element {
             <CardFooter position={'relative'}>
                 <VStack>
                 <HStack>
-                    <Button w={r.owner === lobby.ourPlayerID ? '50%' : '100%'}  onClick={() => {
+                    <Button color='gray.600' w={r.owner === lobby.ourPlayerID ? '50%' : '100%'}  onClick={() => {
                         lobby.joinRoom(r.id, pass)
                     }}>Join Room</Button>
-                    {r.owner === lobby.ourPlayerID ? <Button w='50%' onClick={() => {
+                    {r.owner === lobby.ourPlayerID ? <Button color='gray.600' w='50%' onClick={() => {
                         lobby.deleteRoom(r.id)
                     }}>Delete Room</Button>: <></> } 
                 </HStack>

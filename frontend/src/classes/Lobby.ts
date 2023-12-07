@@ -6,7 +6,6 @@ export default class Lobby extends EventEmitter {
   public otherPlayers: string[];
   public ourPlayerID: string;
   public ourPlayerSocket: WebSocket | undefined;
-
   constructor() {
     super();
     this.rooms = [];

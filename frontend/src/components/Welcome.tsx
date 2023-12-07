@@ -25,12 +25,12 @@ export default function Welcome({username, setUsername}: WelcomeProps): JSX.Elem
           backgroundColor='gray.100'
           padding='50'
           borderRadius={'10'}> 
-          <Heading color="teal.400">Dead Simple Chat Application</Heading>
+          <Heading color="gray.600">Simple Chat Application</Heading>
             <FormControl pt={10} >
               <InputGroup >
                 <Input placeholder="Username" value={username} onChange={(e) => setUsername(e.target.value)}/>
                 <InputRightElement width='7rem'>
-                  <Button size='sm' color={'gray.540'} background={'gray.200'}
+                  <Button size='sm' color={'gray.600'} background={'gray.200'}
                   onClick={() => {
                     lobby.addUserToLobby(username);
                   }}>
