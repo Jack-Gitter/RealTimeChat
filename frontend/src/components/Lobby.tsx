@@ -22,6 +22,8 @@ export default function Lobby(): JSX.Element {
   let colors = useRef(new Map())
   
   const {isOpen, onClose, onOpen} = useDisclosure()
+  const tID = 'joinLobbyError'
+  const tID2 = 'joinRoomError'
   
   useEffect(() => {
     lobby.addListener("LobbyUpdate", (l) => {
@@ -45,13 +47,29 @@ export default function Lobby(): JSX.Element {
       setSelectedRoomIfOurUserIsInRoom(l)
     })
     lobby.addListener("loginError", () => {
-      toast({
-        title: 'username with user already exists in the lobby',
-        description: 'fuck you',
-        status: 'error',
-        duration: 2000,
-        isClosable: true,
-      })
+      console.log("blank!")
+      if (!toast.isActive(tID)) {
+        toast({
+          id: tID,
+          title: 'Could not join lobby',
+          description: 'Username already in use',
+          status: 'error',
+          duration: 2000,
+          isClosable: true,
+        })
+      }
+    })
+    lobby.addListener("joinRoomError", () => {
+      if (!toast.isActive(tID2)) {
+        toast({
+          id: tID2,
+          title: 'Could not join room',
+          description: 'Incorrect Password',
+          status: 'error',
+          duration: 2000,
+          isClosable: true,
+        })
+      }
     })
   });
 

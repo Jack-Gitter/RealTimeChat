@@ -13,17 +13,7 @@ export default function RoomComponent({r}: RoomComponentProps): JSX.Element {
     let [pass, setPass] = useState("")
     
     useEffect(() => {
-        console.log("ourplayer is " + lobby.ourPlayerID)
-        lobby.addListener("joinRoomError", () => {
-            toast({
-              title: 'room password is incorrect',
-              description: 'fuck you',
-              status: 'error',
-              duration: 2000,
-              isClosable: true,
-            })
-          })
-
+        
     })
     return (<>
        <Card background={'#d4d6d9'} color='gray.600'>
