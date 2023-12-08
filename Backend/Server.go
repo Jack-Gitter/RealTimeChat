@@ -24,8 +24,9 @@ var lobby = model.Lobby{
 }
 
 func main() {
+	fmt.Println("server listening on 8080")
 	http.HandleFunc("/lobby", joinLobbyHandler)
-	http.ListenAndServe("localhost:8080", nil)
+	http.ListenAndServe("0.0.0.0:8080", nil)
 }
 
 func joinLobbyHandler(w http.ResponseWriter, r *http.Request) {

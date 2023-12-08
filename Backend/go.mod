@@ -1,6 +1,6 @@
 module RealTimeChat
 
-go 1.21.3
+go 1.21
 
 require (
 	github.com/gorilla/websocket v1.5.1 // indirect

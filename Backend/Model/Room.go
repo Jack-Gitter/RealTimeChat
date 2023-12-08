@@ -9,5 +9,5 @@ type Room struct {
 	PlayerConnections map[string]*websocket.Conn
 	Messages          [][]string // of the form [[username: message], [username: message], [username, message]] in order
 	Owner             string     // the playerID of the user who created the room
-	Password          string
+	Password          string     // "" if no password, otherwise the password to a room for a private room
 }
