@@ -92,7 +92,7 @@ export default class Lobby extends EventEmitter {
     this.emit("NewRoom", this);
   }
   public addUserToLobby(username: string) {
-    this.ourPlayerSocket = new WebSocket("ws://localhost:8080/lobby");
+  this.ourPlayerSocket = new WebSocket("ws://0.0.0.0:8080/lobby");
     this.ourPlayerSocket.onmessage = (event) => {
       try {
         let jsonMessage = JSON.parse(event.data);
