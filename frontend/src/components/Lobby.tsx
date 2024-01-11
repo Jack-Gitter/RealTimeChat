@@ -6,6 +6,7 @@ import RoomComponent from "./RoomComponent";
 import Welcome from "./Welcome";
 import Sidebar from "./Sidebar";
 import RoomSidebar from "./RoomSidebar";
+import React from "react";
 
 export default function Lobby(): JSX.Element {
   let toast = useToast()
@@ -20,12 +21,16 @@ export default function Lobby(): JSX.Element {
   let [username, setUsername] = useState("")
   let [roomPass, setRoomPass] = useState("")
   let colors = useRef(new Map())
-  
+  let messageEndRef = useRef<HTMLDivElement | null>(null)
+
   const {isOpen, onClose, onOpen} = useDisclosure()
   const tID = 'joinLobbyError'
   const tID2 = 'joinRoomError'
   
   useEffect(() => {
+    if (messageEndRef != null && messageEndRef.current != null) {
+      messageEndRef.current.scrollIntoView()
+    }
     lobby.addListener("LobbyUpdate", (l) => {
       setOurPlayerID(l.ourPlayerID);
       setOtherPlayers([...l.otherPlayers]);
@@ -168,7 +173,16 @@ export default function Lobby(): JSX.Element {
       <Box m='2'>
         <RoomSidebar colors={colors} ourPlayerID={ourPlayerID} id={selectedRoom.id} otherPlayers={selectedRoom.playersInRoom}/>
       <ul>
-      
+    
+      <VStack>
+      <Box maxH={250} overflowY='scroll' overflow={'scroll'} w='20%'>
+      {selectedRoom.messages.reverse().map((playerToMessage: string[]) => {
+        return <Box>
+            <Text backgroundColor={hexToRGB('#'+colors.current.get(playerToMessage[0]), .5)} as='span'>{playerToMessage[0]}</Text> → {playerToMessage[1]}
+          </Box>
+      })}
+      <div ref={messageEndRef}></div>
+      </Box>
       <Input
         mt='10'
         value={textToSend}
@@ -176,8 +190,6 @@ export default function Lobby(): JSX.Element {
         placeholder='Send a Message!'
         size='sm'
       />
-    
-      <VStack>
       <Button 
       mt='5'
       onClick={() => {
@@ -185,15 +197,7 @@ export default function Lobby(): JSX.Element {
         setTextToSend("")
       }}>Send Message!
       </Button>
-      {selectedRoom.messages.map((playerToMessage: string[]) => {
-
-        return <Box>
-          <Text backgroundColor={hexToRGB('#'+colors.current.get(playerToMessage[0]), .5)} as='span'>{playerToMessage[0]}</Text> → {playerToMessage[1]}</Box>
-      })}
-      
       </VStack>
-
-      
       </ul>
       </Box>
     )
