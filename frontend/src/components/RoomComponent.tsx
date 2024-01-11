@@ -1,4 +1,4 @@
-import { AbsoluteCenter, Text, Box, Button, Card, CardBody, CardFooter, CardHeader, Center, Divider, HStack, Heading, Input, VStack, useToast } from "@chakra-ui/react"
+import { AbsoluteCenter, Text, Box, Button, Card, CardBody, CardFooter, CardHeader, Center, Divider, HStack, Heading, Input, VStack, useToast, Stack } from "@chakra-ui/react"
 import Room from "../classes/Room"
 import useLobby from "../hooks/useLobby"
 import { useEffect, useState } from "react";
@@ -29,18 +29,18 @@ export default function RoomComponent({r}: RoomComponentProps): JSX.Element {
             </VStack>
         </CardBody>
         <Divider />
-            <CardFooter position={'relative'}>
-                <VStack>
-                <HStack>
-                    <Button color='gray.600' w={r.owner === lobby.ourPlayerID ? '50%' : '100%'}  onClick={() => {
-                        lobby.joinRoom(r.id, pass)
-                    }}>Join Room</Button>
-                    {r.owner === lobby.ourPlayerID ? <Button color='gray.600' w='50%' onClick={() => {
-                        lobby.deleteRoom(r.id)
-                    }}>Delete Room</Button>: <></> } 
-                </HStack>
-                {r.password === '' ? <></> : <Input placeholder="password" value={pass} onChange={(e) => setPass(e.target.value)}></Input> }
-                </VStack>
+            <CardFooter position={'relative'} w='100%'>
+                <Stack w='100%' spacing={3}>
+                    <>
+                <Button color='gray.600' m='5px' w='100%' onClick={() => {
+                    lobby.joinRoom(r.id, pass)
+                }}>Join Room</Button>
+                {r.owner === lobby.ourPlayerID ? <Button color='gray.600' m='5px' w='100%' onClick={() => {
+                    lobby.deleteRoom(r.id)
+                }}>Delete Room</Button>: <></> } 
+                </>
+                {r.password === '' ?  <></> : <Input whiteSpace="pre-line" m='5px' placeholder="password" value={pass} onChange={(e) => setPass(e.target.value)}></Input> }
+                </Stack>
             </CardFooter>
         </Card>
     </>)
