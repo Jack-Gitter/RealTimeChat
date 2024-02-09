@@ -18,7 +18,6 @@
 *** for contributors-url, forks-url, etc. This is an optional, concise syntax you may use.
 *** https://www.markdownguide.org/basic-syntax/#reference-style-links
 -->
-[![Contributors][Me!]
 [![LinkedIn][linkedin-shield]][https://www.linkedin.com/in/jack-gitter/]
 
 
@@ -64,7 +63,7 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-[![Real Time Chat][product-screenshot]](https://imgur.com/a/9oFADey)
+[![Real Time Chat]![Alt text](http://full/path/to/img.jpg "Optional title")
 
 There are many great README templates available on GitHub; however, I didn't find one that really suited my needs so I created this enhanced one. I want to create a README template so amazing that it'll be the last one you ever need -- I think this is it.
 
